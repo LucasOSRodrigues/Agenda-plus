@@ -1,14 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [message, setMessage] = useState('');
+  const router = useRouter();
 
+  // Provisório: ainda não há autenticação, qualquer valor entra
   function handleSubmit(event) {
     event.preventDefault();
-    setMessage('A entrada no sistema ainda está em desenvolvimento.');
+    router.push('/inicio');
   }
 
   return (
@@ -21,7 +22,7 @@ export default function LoginPage() {
         <h1 id="login-title">Entre na sua conta</h1>
         <p className="description">Bem-vindo! Acesse o sistema para continuar.</p>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="field">
             <label htmlFor="cpf">CPF</label>
             <input
@@ -51,7 +52,6 @@ export default function LoginPage() {
           </div>
 
           <button type="submit">Entrar</button>
-          <p className="form-message" role="status">{message}</p>
         </form>
       </section>
     </main>
