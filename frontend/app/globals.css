@@ -125,3 +125,140 @@ button:focus-visible {
     padding: 32px 24px 24px;
   }
 }
+
+/* Tela de consulta de horários (/horarios) */
+
+select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #bdccc4;
+  border-radius: 8px;
+  background: #fff;
+  color: #206162;
+  font: inherit;
+}
+
+select:focus-visible {
+  outline: 3px solid #0097b2;
+  outline-offset: 3px;
+}
+
+.horarios-page {
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 20px;
+}
+
+.horarios-card {
+  width: 100%;
+  max-width: 760px;
+  padding: 32px;
+  border: 2px solid #dce6e0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 40px #203b3508;
+}
+
+.horarios-card .brand {
+  justify-content: flex-start;
+  margin-bottom: 20px;
+  font-size: 1.75rem;
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.filtros .field {
+  margin-bottom: 0;
+}
+
+.botao-secundario {
+  width: auto;
+  min-height: 40px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: 1px solid #0097b2;
+  background: #fff;
+  color: #004e5b;
+}
+
+.botao-secundario:hover {
+  background: #e6f5f8;
+}
+
+.sem-horarios {
+  margin: 16px 0 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f1f6f3;
+  color: #596c65;
+  line-height: 1.5;
+}
+
+.dia {
+  margin-top: 24px;
+}
+
+.dia h2 {
+  margin: 0 0 12px;
+  color: #206162;
+  font-size: 16px;
+}
+
+.lista-horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.horario {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid #dce6e0;
+  border-radius: 12px;
+}
+
+.horario-hora {
+  min-width: 112px;
+  color: #004e5b;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.horario-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.horario-detalhes span {
+  color: #596c65;
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .horarios-card {
+    padding: 24px 20px;
+  }
+
+  .filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .horario {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
