@@ -2,5 +2,8 @@
   "name": "agenda-plus-backend",
   "version": "0.1.0",
   "private": true,
-  "description": "Back-end do Agenda+, desenvolvido em Node.js."
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0"
+  }
 }
