@@ -371,3 +371,157 @@ a.atalho:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* Solicitações de agendamento (/horarios e /solicitacoes) */
+
+/* Links de navegação entre as telas */
+
+.links-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 24px;
+}
+
+.link-nav {
+  padding: 8px 16px;
+  border: 1px solid #0097b2;
+  border-radius: 8px;
+  color: #004e5b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-nav:hover {
+  background: #e6f5f8;
+}
+
+.link-nav:focus-visible {
+  outline: 3px solid #0097b2;
+  outline-offset: 3px;
+}
+
+
+.horario-acao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.botao-solicitar {
+  width: auto;
+  min-height: 40px;
+  margin-top: 0;
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+
+.botao-solicitar:disabled {
+  background: #9fb3ab;
+  cursor: wait;
+}
+
+.solicitado {
+  color: #206162;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.aviso {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #e6f5f8;
+  color: #004e5b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.aviso-erro {
+  background: #fbe3e3;
+  color: #8a2525;
+}
+
+.aviso a {
+  color: inherit;
+  font-weight: 600;
+}
+
+.aviso:empty {
+  display: none;
+}
+
+/* Etiqueta de status da solicitação */
+
+.status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-pendente {
+  background: #fff1cc;
+  color: #7a5300;
+}
+
+.status-confirmada {
+  background: #dff3e6;
+  color: #1d6b3a;
+}
+
+.status-recusada {
+  background: #fbe3e3;
+  color: #8a2525;
+}
+
+/* Justificativa informada pelo secretário nas solicitações recusadas */
+
+.justificativa {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  border-left: 4px solid #d98a8a;
+  border-radius: 4px;
+  background: #fdf1f1;
+  color: #596c65;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.justificativa strong {
+  color: #8a2525;
+}
+
+@media (max-width: 640px) {
+  .horario-acao {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: 0;
+  }
+}
+
+/* Data e hora na lista de solicitações: a data é longa, então pode quebrar em duas linhas */
+
+.horario-hora-solicitacao {
+  flex-shrink: 0;
+  width: 168px;
+  white-space: normal;
+}
+
+@media (max-width: 640px) {
+  .horario-hora-solicitacao {
+    width: auto;
+  }
+}
+
+/* Botão de cancelar dentro da lista de solicitações */
+
+.horario-acao .botao-secundario {
+  margin-top: 0;
+}

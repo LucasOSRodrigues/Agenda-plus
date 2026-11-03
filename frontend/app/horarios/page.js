@@ -2,14 +2,17 @@
 
 // Tela de consulta de horários (/horarios)
 // Mostra os horários disponíveis e os filtros por clínica, especialidade e data
+// O paciente também pode solicitar o agendamento de um horário (H04)
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   buscarHorariosDisponiveis,
   listarClinicas,
   listarEspecialidades,
 } from '../../services/horarios';
+import { listarChavesSolicitadas, solicitarAgendamento } from '../../services/solicitacoes';
 
 // Valores iniciais dos filtros (vazio = não filtra)
 const FILTROS_VAZIOS = { CNPJ: '', Especialidade: '', Data: '' };
@@ -58,12 +61,19 @@ export default function ConsultaHorariosPage() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [hoje, setHoje] = useState('');
+  // Chaves dos horários que o paciente já solicitou
+  const [solicitados, setSolicitados] = useState([]);
+  // Chave do horário cuja solicitação está sendo enviada
+  const [enviando, setEnviando] = useState('');
+  // Resultado da última solicitação: { texto, sucesso }
+  const [aviso, setAviso] = useState(null);
 
   // Quando a tela abre, carrega a data de hoje e as opções dos filtros
   useEffect(() => {
     setHoje(dataDeHoje());
     listarClinicas().then(setClinicas);
     listarEspecialidades().then(setEspecialidades);
+    listarChavesSolicitadas().then(setSolicitados);
   }, []);
 
   // Busca os horários de novo sempre que algum filtro muda
@@ -98,6 +108,21 @@ export default function ConsultaHorariosPage() {
     setFiltros((atuais) => ({ ...atuais, [name]: value }));
   }
 
+  // Envia a solicitação de agendamento do horário escolhido
+  async function solicitar(horario) {
+    setEnviando(chaveDoHorario(horario));
+    setAviso(null);
+    try {
+      await solicitarAgendamento(horario);
+      setAviso({ texto: 'Solicitação enviada! Agora é só aguardar a confirmação.', sucesso: true });
+    } catch (e) {
+      setAviso({ texto: e.message, sucesso: false });
+    } finally {
+      setSolicitados(await listarChavesSolicitadas());
+      setEnviando('');
+    }
+  }
+
   const temFiltro = Object.values(filtros).some(Boolean);
   const grupos = agruparPorData(horarios);
 
@@ -125,6 +150,15 @@ export default function ConsultaHorariosPage() {
           Veja os horários livres para consulta. Use os filtros para escolher a clínica, a
           especialidade ou o dia.
         </p>
+
+        <nav className="links-nav" aria-label="Navegação">
+          <Link href="/inicio" className="link-nav">
+            Início
+          </Link>
+          <Link href="/solicitacoes" className="link-nav">
+            Minhas solicitações
+          </Link>
+        </nav>
 
         {/* Filtros: a busca acontece assim que um campo muda, sem botão de enviar */}
         <form className="filtros" onSubmit={(event) => event.preventDefault()}>
@@ -191,6 +225,17 @@ export default function ConsultaHorariosPage() {
           {mensagem}
         </p>
 
+        {/* Resultado da solicitação (sucesso ou erro) */}
+        <p className={`aviso${aviso && !aviso.sucesso ? ' aviso-erro' : ''}`} role="status">
+          {aviso && aviso.texto}
+          {aviso && aviso.sucesso && (
+            <>
+              {' '}
+              <Link href="/solicitacoes">Ver minhas solicitações</Link>
+            </>
+          )}
+        </p>
+
         {/* Aviso quando não tem nenhum horário disponível */}
         {!carregando && !erro && horarios.length === 0 && (
           <p className="sem-horarios">
@@ -221,6 +266,20 @@ export default function ConsultaHorariosPage() {
                         {horario.Clinica.Endereço.Número} – {horario.Clinica.Endereço.Bairro},{' '}
                         {horario.Clinica.Endereço.Cidade}
                       </span>
+                    </div>
+                    <div className="horario-acao">
+                      {solicitados.includes(chaveDoHorario(horario)) ? (
+                        <span className="solicitado">Solicitado</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="botao-solicitar"
+                          disabled={enviando === chaveDoHorario(horario)}
+                          onClick={() => solicitar(horario)}
+                        >
+                          {enviando === chaveDoHorario(horario) ? 'Enviando...' : 'Solicitar consulta'}
+                        </button>
+                      )}
                     </div>
                   </li>
                 ))}

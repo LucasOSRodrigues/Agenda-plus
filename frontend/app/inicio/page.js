@@ -19,7 +19,7 @@ const ATALHOS = [
     titulo: 'Minhas solicitações',
     descricao: 'Acompanhe se suas consultas estão pendentes, confirmadas ou recusadas.',
     href: '/solicitacoes',
-    disponivel: false,
+    disponivel: true,
   },
   {
     titulo: 'Reservar medicamento',
