@@ -10,6 +10,7 @@ import {
   listarClinicas,
   listarEspecialidades,
 } from '../../services/horarios';
+import { listarChavesSolicitadas, solicitarAgendamento } from '../../services/solicitacoes';
 
 // Valores iniciais dos filtros (vazio = não filtra)
 const FILTROS_VAZIOS = { CNPJ: '', Especialidade: '', Data: '' };
@@ -58,12 +59,16 @@ export default function ConsultaHorariosPage() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [hoje, setHoje] = useState('');
+  const [solicitados, setSolicitados] = useState([]);
+  const [enviando, setEnviando] = useState('');
+  const [aviso, setAviso] = useState(null);
 
   // Quando a tela abre, carrega a data de hoje e as opções dos filtros
   useEffect(() => {
     setHoje(dataDeHoje());
     listarClinicas().then(setClinicas);
     listarEspecialidades().then(setEspecialidades);
+    listarChavesSolicitadas().then(setSolicitados);
   }, []);
 
   // Busca os horários de novo sempre que algum filtro muda
@@ -96,6 +101,20 @@ export default function ConsultaHorariosPage() {
   function alterarFiltro(event) {
     const { name, value } = event.target;
     setFiltros((atuais) => ({ ...atuais, [name]: value }));
+  }
+
+  async function solicitar(horario) {
+    setEnviando(chaveDoHorario(horario));
+    setAviso(null);
+    try {
+      await solicitarAgendamento(horario);
+      setAviso({ texto: 'Solicitação enviada! Agora é só aguardar a confirmação.', sucesso: true });
+    } catch (e) {
+      setAviso({ texto: e.message, sucesso: false });
+    } finally {
+      setSolicitados(await listarChavesSolicitadas());
+      setEnviando('');
+    }
   }
 
   const temFiltro = Object.values(filtros).some(Boolean);
@@ -191,7 +210,12 @@ export default function ConsultaHorariosPage() {
           {mensagem}
         </p>
 
-        {/* Aviso quando não tem nenhum horário disponível */}
+        {}
+        <p className={`aviso${aviso && !aviso.sucesso ? ' aviso-erro' : ''}`} role="status">
+          {aviso && aviso.texto}
+        </p>
+
+        {}
         {!carregando && !erro && horarios.length === 0 && (
           <p className="sem-horarios">
             Nenhum horário disponível
@@ -221,6 +245,20 @@ export default function ConsultaHorariosPage() {
                         {horario.Clinica.Endereço.Número} – {horario.Clinica.Endereço.Bairro},{' '}
                         {horario.Clinica.Endereço.Cidade}
                       </span>
+                    </div>
+                    <div className="horario-acao">
+                      {solicitados.includes(chaveDoHorario(horario)) ? (
+                        <span className="solicitado">Solicitado</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="botao-solicitar"
+                          disabled={enviando === chaveDoHorario(horario)}
+                          onClick={() => solicitar(horario)}
+                        >
+                          {enviando === chaveDoHorario(horario) ? 'Enviando...' : 'Solicitar consulta'}
+                        </button>
+                      )}
                     </div>
                   </li>
                 ))}

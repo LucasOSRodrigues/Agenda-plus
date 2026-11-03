@@ -88,3 +88,25 @@ export const horarios = [
   { Médico: { Código: 4 }, Clinica: CLINICA_BAUXITA, Data: diasAPartirDeHoje(3), HoraInicio: '09:00', HoraFim: '09:30', Status: LIBERADO },
   { Médico: { Código: 4 }, Clinica: CLINICA_BAUXITA, Data: diasAPartirDeHoje(5), HoraInicio: '09:30', HoraFim: '10:00', Status: LIBERADO },
 ];
+
+// Solicitações de agendamento 
+export const STATUS_SOLICITACAO = {
+  PENDENTE: 'Pendente',
+  CONFIRMADA: 'Confirmada',
+  RECUSADA: 'Recusada',
+};
+
+export const PACIENTE_LOGADO = { Código: 100 };
+
+export const solicitacoes = [
+  {
+    Código: 1,
+    Paciente: { Código: 100 },
+    Médico: { Código: 1 },
+    Data: diasAPartirDeHoje(2),
+    HoraInicio: '14:00',
+    DataSolicitacao: new Date().toISOString(),
+    Status: STATUS_SOLICITACAO.PENDENTE,
+    Justificativa: '',
+  },
+];

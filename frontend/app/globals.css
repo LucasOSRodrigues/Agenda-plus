@@ -371,3 +371,61 @@ a.atalho:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* Solicitação de agendamento (/horarios) */
+
+.horario-acao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.botao-solicitar {
+  width: auto;
+  min-height: 40px;
+  margin-top: 0;
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+
+.botao-solicitar:disabled {
+  background: #9fb3ab;
+  cursor: wait;
+}
+
+.solicitado {
+  color: #206162;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.aviso {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #e6f5f8;
+  color: #004e5b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.aviso-erro {
+  background: #fbe3e3;
+  color: #8a2525;
+}
+
+.aviso:empty {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .horario-acao {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: 0;
+  }
+}
