@@ -480,11 +480,42 @@ a.atalho:hover {
   color: #8a2525;
 }
 
+/* Justificativa informada pelo secretário nas solicitações recusadas */
+
+.justificativa {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  border-left: 4px solid #d98a8a;
+  border-radius: 4px;
+  background: #fdf1f1;
+  color: #596c65;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.justificativa strong {
+  color: #8a2525;
+}
+
 @media (max-width: 640px) {
   .horario-acao {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     margin-left: 0;
+  }
+}
+
+/* Data e hora na lista de solicitações: a data é longa, então pode quebrar em duas linhas */
+
+.horario-hora-solicitacao {
+  flex-shrink: 0;
+  width: 168px;
+  white-space: normal;
+}
+
+@media (max-width: 640px) {
+  .horario-hora-solicitacao {
+    width: auto;
   }
 }

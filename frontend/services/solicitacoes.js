@@ -36,6 +36,8 @@ function doPacienteLogado(solicitacao) {
   return solicitacao.Paciente.Código === PACIENTE_LOGADO.Código;
 }
 
+// Lista as solicitações do paciente, da consulta mais próxima para a mais distante
+// Cada uma volta com Médico, Clinica e HoraFim, para a tela mostrar os detalhes
 export async function listarSolicitacoesDoPaciente() {
   return solicitacoes
     .filter(doPacienteLogado)
@@ -50,7 +52,12 @@ export async function listarSolicitacoesDoPaciente() {
         Clinica: clinicas.find((clinica) => clinica.CNPJ === horario?.Clinica.CNPJ),
       };
     })
-    .sort((a, b) => b.DataSolicitacao.localeCompare(a.DataSolicitacao));
+    .sort(
+      (a, b) =>
+        a.Data.localeCompare(b.Data) ||
+        a.HoraInicio.localeCompare(b.HoraInicio) ||
+        a.Código - b.Código,
+    );
 }
 
 // Chaves dos horários que o paciente já solicitou (pendentes ou confirmadas)

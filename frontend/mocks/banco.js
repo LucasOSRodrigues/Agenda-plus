@@ -132,4 +132,14 @@ export const solicitacoes = [
     Status: STATUS_SOLICITACAO.PENDENTE,
     Justificativa: '',
   },
+  {
+    Código: 3,
+    Paciente: { Código: 100 },
+    Médico: { Código: 2 },
+    Data: diasAPartirDeHoje(1),
+    HoraInicio: '10:00',
+    DataSolicitacao: horasAtras(20),
+    Status: STATUS_SOLICITACAO.RECUSADA,
+    Justificativa: 'O médico precisou reorganizar a agenda deste dia. Escolha outro horário.',
+  },
 ];

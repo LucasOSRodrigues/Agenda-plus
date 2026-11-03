@@ -1,17 +1,22 @@
 'use client';
 
+// Tela de acompanhamento das solicitações (/solicitacoes)
+// Mostra a lista de solicitações do paciente com o status atual de cada uma (H05)
+
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { listarSolicitacoesDoPaciente } from '../../services/solicitacoes';
 import { STATUS_SOLICITACAO } from '../../mocks/banco';
 
+// Classe de cor de cada status (ver .status-* no globals.css)
 const CLASSE_STATUS = {
   [STATUS_SOLICITACAO.PENDENTE]: 'status-pendente',
   [STATUS_SOLICITACAO.CONFIRMADA]: 'status-confirmada',
   [STATUS_SOLICITACAO.RECUSADA]: 'status-recusada',
 };
 
+// Transforma a data (AAAA-MM-DD) em texto, ex.: "Quarta-feira, 5 de novembro"
 function formatarData(data) {
   const texto = new Date(`${data}T00:00`).toLocaleDateString('pt-BR', {
     weekday: 'long',
@@ -26,6 +31,7 @@ export default function MinhasSolicitacoesPage() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
+  // Quando a tela abre, carrega as solicitações do paciente
   useEffect(() => {
     listarSolicitacoesDoPaciente()
       .then(setSolicitacoes)
@@ -33,6 +39,7 @@ export default function MinhasSolicitacoesPage() {
       .finally(() => setCarregando(false));
   }, []);
 
+  // Mensagem que aparece logo abaixo da navegação
   let mensagem = '';
   if (carregando) {
     mensagem = 'Carregando solicitações...';
@@ -69,7 +76,7 @@ export default function MinhasSolicitacoesPage() {
           {mensagem}
         </p>
 
-        {}
+        {/* Aviso quando o paciente ainda não pediu nenhuma consulta */}
         {!carregando && !erro && solicitacoes.length === 0 && (
           <p className="sem-horarios">
             Você ainda não solicitou nenhuma consulta.{' '}
@@ -81,7 +88,7 @@ export default function MinhasSolicitacoesPage() {
           <ul className="lista-horarios" style={{ marginTop: 16 }}>
             {solicitacoes.map((solicitacao) => (
               <li className="horario" key={solicitacao.Código}>
-                <span className="horario-hora">
+                <span className="horario-hora horario-hora-solicitacao">
                   {formatarData(solicitacao.Data)}
                   <br />
                   {solicitacao.HoraInicio} – {solicitacao.HoraFim}
@@ -99,6 +106,14 @@ export default function MinhasSolicitacoesPage() {
                       {solicitacao.Clinica.Endereço.Número} – {solicitacao.Clinica.Endereço.Bairro},{' '}
                       {solicitacao.Clinica.Endereço.Cidade}
                     </span>
+                  )}
+
+                  {/* Solicitações recusadas mostram a justificativa do secretário */}
+                  {solicitacao.Status === STATUS_SOLICITACAO.RECUSADA && (
+                    <p className="justificativa">
+                      <strong>Motivo da recusa:</strong>{' '}
+                      {solicitacao.Justificativa || 'Nenhuma justificativa foi informada.'}
+                    </p>
                   )}
                 </div>
 
