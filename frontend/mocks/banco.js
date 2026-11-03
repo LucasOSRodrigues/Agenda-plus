@@ -89,23 +89,46 @@ export const horarios = [
   { Médico: { Código: 4 }, Clinica: CLINICA_BAUXITA, Data: diasAPartirDeHoje(5), HoraInicio: '09:30', HoraFim: '10:00', Status: LIBERADO },
 ];
 
-// Solicitações de agendamento 
+// ---------------------------------------------------------------------------
+// Solicitações de agendamento (H04 e H05)
+// ---------------------------------------------------------------------------
+
+// Valores do atributo Status de Solicitação
 export const STATUS_SOLICITACAO = {
   PENDENTE: 'Pendente',
   CONFIRMADA: 'Confirmada',
   RECUSADA: 'Recusada',
 };
 
+// Provisório: ainda não há autenticação, então o paciente logado é sempre este
 export const PACIENTE_LOGADO = { Código: 100 };
 
+// Momento X horas atrás, em formato ISO (para a data em que a solicitação foi feita)
+function horasAtras(horas) {
+  return new Date(Date.now() - horas * 60 * 60 * 1000).toISOString();
+}
+
+// Solicitação: Código (chave), Paciente (quem pediu), Médico + Data + HoraInicio
+// (o Horário escolhido), DataSolicitacao, Status e Justificativa
+// A Justificativa só é preenchida quando o Status é Recusada (informada pelo secretário)
 export const solicitacoes = [
   {
     Código: 1,
     Paciente: { Código: 100 },
     Médico: { Código: 1 },
+    Data: diasAPartirDeHoje(1),
+    HoraInicio: '08:30',
+    DataSolicitacao: horasAtras(30),
+    Status: STATUS_SOLICITACAO.CONFIRMADA,
+    Justificativa: '',
+  },
+  {
+    Código: 2,
+    Paciente: { Código: 100 },
+    Médico: { Código: 1 },
     Data: diasAPartirDeHoje(2),
     HoraInicio: '14:00',
-    DataSolicitacao: new Date().toISOString(),
+    DataSolicitacao: horasAtras(2),
     Status: STATUS_SOLICITACAO.PENDENTE,
     Justificativa: '',
   },

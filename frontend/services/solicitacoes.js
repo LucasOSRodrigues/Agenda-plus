@@ -1,10 +1,12 @@
-// Serviço de solicitações de agendamento usado pela tela /horarios.
+// Serviço de solicitações de agendamento usado pelas telas /horarios e /solicitacoes.
 // Por enquanto as funções utilizam os dados fictícios de mocks/banco.js
 // As solicitações ficam só em memória: recarregar a página (F5) volta ao estado inicial.
 // Quando o banco existir, basta trocar o corpo destas funções e manter as assinaturas.
 
 import {
+  clinicas,
   horarios,
+  medicos,
   solicitacoes as solicitacoesIniciais,
   PACIENTE_LOGADO,
   STATUS_HORARIO,
@@ -32,6 +34,23 @@ function estaAtiva(solicitacao) {
 
 function doPacienteLogado(solicitacao) {
   return solicitacao.Paciente.Código === PACIENTE_LOGADO.Código;
+}
+
+export async function listarSolicitacoesDoPaciente() {
+  return solicitacoes
+    .filter(doPacienteLogado)
+    .map((solicitacao) => {
+      const horario = horarios.find(
+        (h) => chaveDoHorario(h) === chaveDoHorario(solicitacao),
+      );
+      return {
+        ...solicitacao,
+        HoraFim: horario?.HoraFim ?? '',
+        Médico: medicos.find((medico) => medico.Código === solicitacao.Médico.Código),
+        Clinica: clinicas.find((clinica) => clinica.CNPJ === horario?.Clinica.CNPJ),
+      };
+    })
+    .sort((a, b) => b.DataSolicitacao.localeCompare(a.DataSolicitacao));
 }
 
 // Chaves dos horários que o paciente já solicitou (pendentes ou confirmadas)
