@@ -519,3 +519,9 @@ a.atalho:hover {
     width: auto;
   }
 }
+
+/* Botão de cancelar dentro da lista de solicitações */
+
+.horario-acao .botao-secundario {
+  margin-top: 0;
+}

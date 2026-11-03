@@ -101,3 +101,15 @@ export async function solicitarAgendamento(horario) {
   solicitacoes = [...solicitacoes, nova];
   return nova;
 }
+
+// Cancela (remove) uma solicitação que ainda está pendente
+export async function cancelarSolicitacao(codigo) {
+  const solicitacao = solicitacoes.find((s) => s.Código === codigo && doPacienteLogado(s));
+  if (!solicitacao) {
+    throw new Error('Solicitação não encontrada.');
+  }
+  if (solicitacao.Status !== STATUS_SOLICITACAO.PENDENTE) {
+    throw new Error('Só é possível cancelar solicitações pendentes.');
+  }
+  solicitacoes = solicitacoes.filter((s) => s.Código !== codigo);
+}
