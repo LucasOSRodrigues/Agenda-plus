@@ -1,6 +1,6 @@
 // Configuração da API: middlewares e rotas
 import cors from 'cors';
-import express from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use((_req, res) => {
 });
 
 // O Express identifica o tratador de erros pelos 4 parâmetros
-app.use((erro, _req, res, _next) => {
+app.use((erro: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error(erro);
   res.status(500).json({ erro: 'Erro interno do servidor.' });
 });
