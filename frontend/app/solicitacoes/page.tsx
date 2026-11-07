@@ -8,16 +8,15 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cancelarSolicitacao, listarSolicitacoesDoPaciente } from '../../services/solicitacoes';
-import { STATUS_SOLICITACAO } from '../../mocks/banco';
 import type { SolicitacaoDetalhada, StatusSolicitacao } from '@shared/agenda';
 
 type Aviso = { texto: string; sucesso: boolean };
 
 // Classe de cor de cada status (ver .status-* no globals.css)
 const CLASSE_STATUS: Record<StatusSolicitacao, string> = {
-  [STATUS_SOLICITACAO.PENDENTE]: 'status-pendente',
-  [STATUS_SOLICITACAO.CONFIRMADA]: 'status-confirmada',
-  [STATUS_SOLICITACAO.RECUSADA]: 'status-recusada',
+  Pendente: 'status-pendente',
+  Confirmada: 'status-confirmada',
+  Recusada: 'status-recusada',
 };
 
 // Transforma a data (AAAA-MM-DD) em texto, ex.: "Quarta-feira, 5 de novembro"
@@ -141,7 +140,7 @@ export default function MinhasSolicitacoesPage() {
                   )}
 
                   {/* Solicitações recusadas mostram a justificativa do secretário */}
-                  {solicitacao.Status === STATUS_SOLICITACAO.RECUSADA && (
+                  {solicitacao.Status === 'Recusada' && (
                     <p className="justificativa">
                       <strong>Motivo da recusa:</strong>{' '}
                       {solicitacao.Justificativa || 'Nenhuma justificativa foi informada.'}
@@ -154,7 +153,7 @@ export default function MinhasSolicitacoesPage() {
                     {solicitacao.Status}
                   </span>
                   {/* Só solicitações pendentes podem ser canceladas */}
-                  {solicitacao.Status === STATUS_SOLICITACAO.PENDENTE && (
+                  {solicitacao.Status === 'Pendente' && (
                     <button
                       type="button"
                       className="botao-secundario"
