@@ -8,6 +8,10 @@ dist/
 build/
 coverage/
 
+# TypeScript e Next.js
+*.tsbuildinfo
+next-env.d.ts
+
 # Variáveis de ambiente
 .env
 .env.*
