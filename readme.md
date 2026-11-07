@@ -22,7 +22,7 @@ O sistema é dividido em quatro portais:
 ## Tecnologias e estrutura inicial
 
 - **Front-end:** Next.js com React e JavaScript.
-- **Back-end:** Node.js, em uma aplicação separada do front-end.
+- **Back-end:** Node.js com Express, em uma aplicação separada do front-end.
 
 ```text
 frontend/   Front-end e seu package.json
@@ -30,9 +30,20 @@ backend/    Back-end e seu package.json
 docs/       Documentação do projeto
 ```
 
-O repositório está na etapa de preparação inicial. Os arquivos `package.json` definem a base dos projetos; ainda não há páginas ou servidor implementados. As dependências do front-end estão declaradas, e as bibliotecas do back-end serão escolhidas posteriormente.
+Para o desenvolvimento, é necessário ter npm e Node.js 22.9 ou superior instalados.
 
-Para o desenvolvimento, é necessário ter Node.js e npm instalados.
+## Como rodar o back-end
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+npm run dev
+```
+
+A API fica disponível em `http://localhost:3001`. Para testar, acesse `http://localhost:3001/health`, que deve responder `{"status":"ok"}`.
+
+O arquivo `.env` guarda as configurações locais e não vai para o Git. Sem ele, o `npm run dev` falha com o erro `ENOENT`. Ao adicionar uma variável nova, inclua-a também no `.env.example`, sem valores reais de senhas ou chaves.
 
 ## Quadro Kanban
 
