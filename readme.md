@@ -47,6 +47,22 @@ A API fica disponível em `http://localhost:3001`. Para testar, acesse `http://l
 
 O arquivo `.env` guarda as configurações locais e não vai para o Git. Sem ele, o `npm run dev` falha com o erro `ENOENT`. Ao adicionar uma variável nova, inclua-a também no `.env.example`, sem valores reais de senhas ou chaves.
 
+### Rotas da API
+
+Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts`). Reiniciar o servidor volta tudo ao estado inicial.
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| GET | `/horarios?CNPJ=&Especialidade=&Data=` | Horários disponíveis (filtros opcionais, `Data` em AAAA-MM-DD) |
+| GET | `/clinicas` | Opções do filtro de clínica |
+| GET | `/especialidades` | Opções do filtro de especialidade |
+| GET | `/solicitacoes` | Solicitações do paciente logado |
+| GET | `/solicitacoes/chaves` | Chaves (`Médico-Data-HoraInicio`) dos horários já solicitados |
+| POST | `/solicitacoes` | Cria uma solicitação. Corpo: `{ "Médico": { "Código": 1 }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM" }` |
+| DELETE | `/solicitacoes/:codigo` | Cancela uma solicitação pendente |
+
+Os erros voltam no formato `{ "erro": "mensagem" }`, com status 400 (dados inválidos), 404 (não encontrado) ou 409 (regra de negócio, ex.: horário indisponível).
+
 ## Quadro Kanban
 
 (https://github.com/users/LucasOSRodrigues/projects/5)
