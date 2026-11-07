@@ -1,123 +1,44 @@
-// Serviço de solicitações de agendamento usado pelas telas /horarios e /solicitacoes.
-// Por enquanto as funções utilizam os dados fictícios de mocks/banco.ts
-// As solicitações ficam só em memória: recarregar a página (F5) volta ao estado inicial.
-// Quando o banco existir, basta trocar o corpo destas funções e manter as assinaturas.
+// Serviço de solicitações de agendamento usado pelas telas /horarios e /solicitacoes
+// Os dados vêm da API do backend (caminhos em services/rotas.ts)
+// Em caso de erro, a API responde { erro: "mensagem" }, que é mostrada na tela
 
-import {
-  clinicas,
-  horarios,
-  medicos,
-  solicitacoes as solicitacoesIniciais,
-  PACIENTE_LOGADO,
-  STATUS_HORARIO,
-  STATUS_SOLICITACAO,
-} from '../mocks/banco';
-import type {
-  ChaveHorario,
-  Horario,
-  Medico,
-  Solicitacao,
-  SolicitacaoDetalhada,
-} from '@shared/agenda';
+import type { ChaveHorario, Solicitacao, SolicitacaoDetalhada } from '@shared/agenda';
+import { ROTAS } from './rotas';
 
-// Cópia do mock, para poder criar solicitações sem alterar o arquivo original
-let solicitacoes: Solicitacao[] = solicitacoesIniciais.map((solicitacao) => ({ ...solicitacao }));
-let proximoCodigo = Math.max(0, ...solicitacoes.map((s) => s.Código)) + 1;
-
-// Mesmo formato de chave usado na tela de horários: Médico + Data + HoraInicio
-function chaveDoHorario(horario: ChaveHorario): string {
-  return `${horario.Médico.Código}-${horario.Data}-${horario.HoraInicio}`;
-}
-
-function inicioDoHorario(horario: Pick<Horario, 'Data' | 'HoraInicio'>): Date {
-  return new Date(`${horario.Data}T${horario.HoraInicio}`);
-}
-
-// Solicitação que ainda ocupa o horário: pendente ou confirmada
-// (recusada libera o horário para uma nova solicitação)
-function estaAtiva(solicitacao: Solicitacao): boolean {
-  return solicitacao.Status !== STATUS_SOLICITACAO.RECUSADA;
-}
-
-function doPacienteLogado(solicitacao: Solicitacao): boolean {
-  return solicitacao.Paciente.Código === PACIENTE_LOGADO.Código;
-}
-
-// Lista as solicitações do paciente, da consulta mais próxima para a mais distante
+// Solicitações do paciente, da consulta mais próxima para a mais distante
 // Cada uma volta com Médico, Clinica e HoraFim, para a tela mostrar os detalhes
 export async function listarSolicitacoesDoPaciente(): Promise<SolicitacaoDetalhada[]> {
-  return solicitacoes
-    .filter(doPacienteLogado)
-    .map((solicitacao): SolicitacaoDetalhada => {
-      const horario = horarios.find(
-        (h) => chaveDoHorario(h) === chaveDoHorario(solicitacao),
-      );
-      return {
-        ...solicitacao,
-        HoraFim: horario?.HoraFim ?? '',
-        // Toda solicitação do mock aponta para um médico existente
-        Médico: medicos.find((medico) => medico.Código === solicitacao.Médico.Código) as Medico,
-        Clinica: clinicas.find((clinica) => clinica.CNPJ === horario?.Clinica.CNPJ),
-      };
-    })
-    .sort(
-      (a, b) =>
-        a.Data.localeCompare(b.Data) ||
-        a.HoraInicio.localeCompare(b.HoraInicio) ||
-        a.Código - b.Código,
-    );
+  const resposta = await fetch(ROTAS.solicitacoes);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
 
-// Chaves dos horários que o paciente já solicitou (pendentes ou confirmadas)
+// Chaves ("Médico-Data-HoraInicio") dos horários que o paciente já solicitou
 // A tela de horários usa isso para trocar o botão "Solicitar" por "Solicitado"
 export async function listarChavesSolicitadas(): Promise<string[]> {
-  return solicitacoes.filter(doPacienteLogado).filter(estaAtiva).map(chaveDoHorario);
+  const resposta = await fetch(ROTAS.chavesSolicitadas);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
 
 // Cria uma solicitação pendente para o horário escolhido
-// O horário só muda para Reservado quando o secretário confirmar (sub-issue #8, depende do banco)
+// Envia só a chave do horário (Médico + Data + HoraInicio), que é o que a API precisa
 export async function solicitarAgendamento(horario: ChaveHorario): Promise<Solicitacao> {
-  const chave = chaveDoHorario(horario);
-
-  const horarioAtual = horarios.find((h) => chaveDoHorario(h) === chave);
-  if (
-    !horarioAtual ||
-    horarioAtual.Status !== STATUS_HORARIO.LIBERADO ||
-    inicioDoHorario(horarioAtual) <= new Date()
-  ) {
-    throw new Error('Este horário não está mais disponível. Escolha outro.');
-  }
-
-  const jaSolicitado = solicitacoes
-    .filter(doPacienteLogado)
-    .filter(estaAtiva)
-    .some((solicitacao) => chaveDoHorario(solicitacao) === chave);
-  if (jaSolicitado) {
-    throw new Error('Você já solicitou este horário.');
-  }
-
-  const nova: Solicitacao = {
-    Código: proximoCodigo++,
-    Paciente: { Código: PACIENTE_LOGADO.Código },
-    Médico: { Código: horario.Médico.Código },
-    Data: horario.Data,
-    HoraInicio: horario.HoraInicio,
-    DataSolicitacao: new Date().toISOString(),
-    Status: STATUS_SOLICITACAO.PENDENTE,
-    Justificativa: '',
-  };
-  solicitacoes = [...solicitacoes, nova];
-  return nova;
+  const resposta = await fetch(ROTAS.solicitacoes, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      Médico: { Código: horario.Médico.Código },
+      Data: horario.Data,
+      HoraInicio: horario.HoraInicio,
+    }),
+  });
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
 
-// Cancela (remove) uma solicitação que ainda está pendente
+// Cancela uma solicitação que ainda está pendente
 export async function cancelarSolicitacao(codigo: number): Promise<void> {
-  const solicitacao = solicitacoes.find((s) => s.Código === codigo && doPacienteLogado(s));
-  if (!solicitacao) {
-    throw new Error('Solicitação não encontrada.');
-  }
-  if (solicitacao.Status !== STATUS_SOLICITACAO.PENDENTE) {
-    throw new Error('Só é possível cancelar solicitações pendentes.');
-  }
-  solicitacoes = solicitacoes.filter((s) => s.Código !== codigo);
+  const resposta = await fetch(ROTAS.solicitacao(codigo), { method: 'DELETE' });
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
 }
