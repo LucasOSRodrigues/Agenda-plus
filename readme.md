@@ -27,8 +27,11 @@ O sistema é dividido em quatro portais:
 ```text
 frontend/   Front-end e seu package.json
 backend/    Back-end e seu package.json
+shared/     Tipos TypeScript compartilhados entre front-end e back-end
 docs/       Documentação do projeto
 ```
+
+Os tipos das entidades (Clinica, Medico, Horario, Solicitacao...) ficam em `shared/agenda.ts` e são importados nos dois projetos com `import type { ... } from '@shared/agenda'`. Esse arquivo só pode ter tipos, sem código que roda.
 
 Para o desenvolvimento, é necessário ter npm e Node.js 22.9 ou superior instalados.
 
