@@ -12,7 +12,19 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@shared/*": [
+        "../shared/*.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ]
 }
