@@ -1,10 +1,9 @@
-// Tipos das entidades do Agenda+
+// Tipos das entidades do Agenda+, compartilhados entre frontend e backend
 // Os nomes das entidades e dos atributos seguem o diagrama ERE do TP1 de BD1
+// Este arquivo só pode ter tipos: ele é importado com "import type" e some no build
 
-import type { STATUS_HORARIO, STATUS_SOLICITACAO } from '../mocks/banco.js';
-
-export type StatusHorario = (typeof STATUS_HORARIO)[keyof typeof STATUS_HORARIO];
-export type StatusSolicitacao = (typeof STATUS_SOLICITACAO)[keyof typeof STATUS_SOLICITACAO];
+export type StatusHorario = 'Liberado' | 'Bloqueado' | 'Reservado';
+export type StatusSolicitacao = 'Pendente' | 'Confirmada' | 'Recusada';
 
 // Referências por chave, usadas nos relacionamentos
 export type RefMedico = { Código: number };
