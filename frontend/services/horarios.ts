@@ -8,7 +8,7 @@ import type {
   Horario,
   HorarioDetalhado,
   Medico,
-} from '../types/agenda';
+} from '@shared/agenda';
 
 function compararTexto(a: string, b: string): number {
   return a.localeCompare(b, 'pt-BR');

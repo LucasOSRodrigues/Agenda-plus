@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cancelarSolicitacao, listarSolicitacoesDoPaciente } from '../../services/solicitacoes';
 import { STATUS_SOLICITACAO } from '../../mocks/banco';
-import type { SolicitacaoDetalhada, StatusSolicitacao } from '../../types/agenda';
+import type { SolicitacaoDetalhada, StatusSolicitacao } from '@shared/agenda';
 
 type Aviso = { texto: string; sucesso: boolean };
 

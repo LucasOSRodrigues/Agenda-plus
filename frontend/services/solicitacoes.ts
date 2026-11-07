@@ -18,7 +18,7 @@ import type {
   Medico,
   Solicitacao,
   SolicitacaoDetalhada,
-} from '../types/agenda';
+} from '@shared/agenda';
 
 // Cópia do mock, para poder criar solicitações sem alterar o arquivo original
 let solicitacoes: Solicitacao[] = solicitacoesIniciais.map((solicitacao) => ({ ...solicitacao }));
