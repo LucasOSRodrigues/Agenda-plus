@@ -2,6 +2,8 @@
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { ErroHttp } from './erros.js';
+import rotasHorarios from './routes/horarios.js';
+import rotasSolicitacoes from './routes/solicitacoes.js';
 
 const app = express();
 
@@ -15,6 +17,9 @@ app.use(express.json());
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use(rotasHorarios);
+app.use(rotasSolicitacoes);
 
 // Nenhuma rota atendeu à requisição
 app.use((_req, res) => {
