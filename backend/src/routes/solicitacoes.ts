@@ -7,7 +7,7 @@ import {
   listarSolicitacoesDoPaciente,
   solicitarAgendamento,
 } from '../services/solicitacoes.js';
-import type { ChaveHorario } from '../types/agenda.js';
+import type { ChaveHorario } from '@shared/agenda';
 
 const router = Router();
 

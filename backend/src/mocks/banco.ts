@@ -1,14 +1,21 @@
 // Dados fictícios usados enquanto o banco de dados não é implementado
 // Os nomes das entidades e dos atributos seguem o diagrama ERE do TP1 de BD1
 
-import type { Clinica, Horario, Medico, Solicitacao } from '../types/agenda.js';
+import type {
+  Clinica,
+  Horario,
+  Medico,
+  Solicitacao,
+  StatusHorario,
+  StatusSolicitacao,
+} from '@shared/agenda';
 
 // Valores do atributo Status de Horário
 export const STATUS_HORARIO = {
   LIBERADO: 'Liberado',
   BLOQUEADO: 'Bloqueado',
   RESERVADO: 'Reservado',
-} as const;
+} as const satisfies Record<string, StatusHorario>;
 
 // Clinica: CNPJ (chave), Nome, Endereço (Logradouro, Número, Bairro, Cidade)
 // e E-mail (multivalorado)
@@ -100,7 +107,7 @@ export const STATUS_SOLICITACAO = {
   PENDENTE: 'Pendente',
   CONFIRMADA: 'Confirmada',
   RECUSADA: 'Recusada',
-} as const;
+} as const satisfies Record<string, StatusSolicitacao>;
 
 // Provisório: ainda não há autenticação, então o paciente logado é sempre este
 export const PACIENTE_LOGADO = { Código: 100 };
