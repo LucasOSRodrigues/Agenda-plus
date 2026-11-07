@@ -1,21 +1,32 @@
 // Serviço de consulta de horários usado pela tela /horarios.
-// Por enquanto as funções utilizam os dados fictícios de mocks/banco.js
+// Por enquanto as funções utilizam os dados fictícios de mocks/banco.ts
 
 import { clinicas, horarios, medicos, STATUS_HORARIO } from '../mocks/banco';
+import type {
+  Clinica,
+  FiltrosHorarios,
+  Horario,
+  HorarioDetalhado,
+  Medico,
+} from '../types/agenda';
 
-function compararTexto(a, b) {
+function compararTexto(a: string, b: string): number {
   return a.localeCompare(b, 'pt-BR');
 }
 
 // Momento em que o horário começa, no fuso do navegador
-function inicioDoHorario(horario) {
+function inicioDoHorario(horario: Pick<Horario, 'Data' | 'HoraInicio'>): Date {
   return new Date(`${horario.Data}T${horario.HoraInicio}`);
 }
 
 // Busca os horários que o paciente pode escolher
 // Cada horário volta com o Médico e a Clinica completos, para a tela
 // mostrar nome, especialidade e endereço
-export async function buscarHorariosDisponiveis({ CNPJ, Especialidade, Data } = {}) {
+export async function buscarHorariosDisponiveis({
+  CNPJ,
+  Especialidade,
+  Data,
+}: FiltrosHorarios = {}): Promise<HorarioDetalhado[]> {
   const agora = new Date();
 
   return horarios
@@ -23,11 +34,14 @@ export async function buscarHorariosDisponiveis({ CNPJ, Especialidade, Data } = 
     // Horários bloqueados, reservados ou que já começaram ficam de fora
     .filter((horario) => horario.Status === STATUS_HORARIO.LIBERADO)
     .filter((horario) => inicioDoHorario(horario) > agora)
-    .map((horario) => ({
-      ...horario,
-      Médico: medicos.find((medico) => medico.Código === horario.Médico.Código),
-      Clinica: clinicas.find((clinica) => clinica.CNPJ === horario.Clinica.CNPJ),
-    }))
+    .map(
+      (horario): HorarioDetalhado => ({
+        ...horario,
+        // Todo horário do mock aponta para um médico e uma clínica existentes
+        Médico: medicos.find((medico) => medico.Código === horario.Médico.Código) as Medico,
+        Clinica: clinicas.find((clinica) => clinica.CNPJ === horario.Clinica.CNPJ) as Clinica,
+      }),
+    )
     // Filtros opcionais (vazio = não filtra):
     // - CNPJ: só horários fornecidos por esta clínica
     // - Especialidade: só horários de médicos desta especialidade
@@ -44,12 +58,12 @@ export async function buscarHorariosDisponiveis({ CNPJ, Especialidade, Data } = 
 }
 
 // Opções do filtro de clínica
-export async function listarClinicas() {
+export async function listarClinicas(): Promise<Clinica[]> {
   return [...clinicas].sort((a, b) => compararTexto(a.Nome, b.Nome));
 }
 
 // Opções do filtro de especialidade, sem repetição
-export async function listarEspecialidades() {
+export async function listarEspecialidades(): Promise<string[]> {
   const especialidades = new Set(medicos.map((medico) => medico.Especialidade));
   return [...especialidades].sort(compararTexto);
 }

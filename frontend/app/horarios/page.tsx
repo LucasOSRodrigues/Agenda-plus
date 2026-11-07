@@ -4,7 +4,7 @@
 // Mostra os horários disponíveis e os filtros por clínica, especialidade e data
 // O paciente também pode solicitar o agendamento de um horário (H04)
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -13,12 +13,16 @@ import {
   listarEspecialidades,
 } from '../../services/horarios';
 import { listarChavesSolicitadas, solicitarAgendamento } from '../../services/solicitacoes';
+import type { ChaveHorario, Clinica, HorarioDetalhado } from '../../types/agenda';
+
+type Filtros = { CNPJ: string; Especialidade: string; Data: string };
+type Aviso = { texto: string; sucesso: boolean };
 
 // Valores iniciais dos filtros (vazio = não filtra)
-const FILTROS_VAZIOS = { CNPJ: '', Especialidade: '', Data: '' };
+const FILTROS_VAZIOS: Filtros = { CNPJ: '', Especialidade: '', Data: '' };
 
 // Data de hoje no formato do campo de data (AAAA-MM-DD)
-function dataDeHoje() {
+function dataDeHoje(): string {
   const hoje = new Date();
   const ano = hoje.getFullYear();
   const mes = String(hoje.getMonth() + 1).padStart(2, '0');
@@ -27,7 +31,7 @@ function dataDeHoje() {
 }
 
 // Transforma a data em texto
-function formatarData(data) {
+function formatarData(data: string): string {
   const texto = new Date(`${data}T00:00`).toLocaleDateString('pt-BR', {
     weekday: 'long',
     day: 'numeric',
@@ -37,36 +41,36 @@ function formatarData(data) {
 }
 
 // Separa os horários (já ordenados) em grupos por Data
-function agruparPorData(horarios) {
-  const grupos = new Map();
+function agruparPorData(horarios: HorarioDetalhado[]): [string, HorarioDetalhado[]][] {
+  const grupos = new Map<string, HorarioDetalhado[]>();
   for (const horario of horarios) {
     if (!grupos.has(horario.Data)) {
       grupos.set(horario.Data, []);
     }
-    grupos.get(horario.Data).push(horario);
+    grupos.get(horario.Data)!.push(horario);
   }
   return [...grupos.entries()];
 }
 
 // Horário é entidade fraca, então é identificado por Médico + Data + HoraInicio
-function chaveDoHorario(horario) {
+function chaveDoHorario(horario: ChaveHorario): string {
   return `${horario.Médico.Código}-${horario.Data}-${horario.HoraInicio}`;
 }
 
 export default function ConsultaHorariosPage() {
-  const [filtros, setFiltros] = useState(FILTROS_VAZIOS);
-  const [clinicas, setClinicas] = useState([]);
-  const [especialidades, setEspecialidades] = useState([]);
-  const [horarios, setHorarios] = useState([]);
+  const [filtros, setFiltros] = useState<Filtros>(FILTROS_VAZIOS);
+  const [clinicas, setClinicas] = useState<Clinica[]>([]);
+  const [especialidades, setEspecialidades] = useState<string[]>([]);
+  const [horarios, setHorarios] = useState<HorarioDetalhado[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [hoje, setHoje] = useState('');
   // Chaves dos horários que o paciente já solicitou
-  const [solicitados, setSolicitados] = useState([]);
+  const [solicitados, setSolicitados] = useState<string[]>([]);
   // Chave do horário cuja solicitação está sendo enviada
   const [enviando, setEnviando] = useState('');
   // Resultado da última solicitação: { texto, sucesso }
-  const [aviso, setAviso] = useState(null);
+  const [aviso, setAviso] = useState<Aviso | null>(null);
 
   // Quando a tela abre, carrega a data de hoje e as opções dos filtros
   useEffect(() => {
@@ -103,20 +107,20 @@ export default function ConsultaHorariosPage() {
   }, [filtros]);
 
   // Atualiza só o filtro que foi alterado e mantém os outros
-  function alterarFiltro(event) {
+  function alterarFiltro(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = event.target;
     setFiltros((atuais) => ({ ...atuais, [name]: value }));
   }
 
   // Envia a solicitação de agendamento do horário escolhido
-  async function solicitar(horario) {
+  async function solicitar(horario: HorarioDetalhado) {
     setEnviando(chaveDoHorario(horario));
     setAviso(null);
     try {
       await solicitarAgendamento(horario);
       setAviso({ texto: 'Solicitação enviada! Agora é só aguardar a confirmação.', sucesso: true });
     } catch (e) {
-      setAviso({ texto: e.message, sucesso: false });
+      setAviso({ texto: (e as Error).message, sucesso: false });
     } finally {
       setSolicitados(await listarChavesSolicitadas());
       setEnviando('');
