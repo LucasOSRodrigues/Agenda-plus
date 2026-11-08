@@ -2,8 +2,10 @@
 // Por enquanto as funções utilizam os dados fictícios de mocks/banco.ts
 
 import { clinicas, horarios, medicos, STATUS_HORARIO } from '../mocks/banco.js';
+import { ErroHttp } from '../erros.js';
 import type {
   Clinica,
+  DadosCadastroHorario,
   FiltrosHorarios,
   Horario,
   HorarioDetalhado,
@@ -40,6 +42,44 @@ export async function listarHorariosGerenciamento(): Promise<HorarioDetalhado[]>
         compararTexto(a.HoraInicio, b.HoraInicio) ||
         compararTexto(a.Médico.Nome, b.Médico.Nome),
     );
+}
+
+// Cadastra um horário bloqueado, que só aparece para o paciente depois de liberado
+export async function cadastrarHorario(
+  dados: DadosCadastroHorario,
+): Promise<HorarioDetalhado> {
+  const medico = medicos.find((item) => item.Código === dados.Médico.Código);
+  if (!medico) {
+    throw new ErroHttp(404, 'Médico não encontrado.');
+  }
+
+  const clinica = clinicas.find((item) => item.CNPJ === dados.Clinica.CNPJ);
+  if (!clinica) {
+    throw new ErroHttp(404, 'Clínica não encontrada.');
+  }
+
+  if (dados.HoraFim <= dados.HoraInicio) {
+    throw new ErroHttp(400, 'A hora final deve ser posterior à hora inicial.');
+  }
+
+  // Dois horários do mesmo médico conflitam quando os seus intervalos se sobrepõem
+  const temConflito = horarios.some(
+    (horario) =>
+      horario.Médico.Código === dados.Médico.Código &&
+      horario.Data === dados.Data &&
+      dados.HoraInicio < horario.HoraFim &&
+      dados.HoraFim > horario.HoraInicio,
+  );
+  if (temConflito) {
+    throw new ErroHttp(409, 'O médico já possui um horário neste período.');
+  }
+
+  const novo: Horario = {
+    ...dados,
+    Status: STATUS_HORARIO.BLOQUEADO,
+  };
+  horarios.push(novo);
+  return detalharHorario(novo);
 }
 
 // Busca os horários que o paciente pode escolher
