@@ -2,13 +2,14 @@
 import { Router } from 'express';
 import { ErroHttp } from '../erros.js';
 import {
+  alterarStatusHorario,
   buscarHorariosDisponiveis,
   cadastrarHorario,
   listarClinicas,
   listarEspecialidades,
   listarHorariosGerenciamento,
 } from '../services/horarios.js';
-import type { DadosCadastroHorario } from '@shared/agenda';
+import type { AlteracaoStatusHorario, DadosCadastroHorario } from '@shared/agenda';
 
 const router = Router();
 
@@ -55,6 +56,33 @@ function lerDadosCadastro(corpo: unknown): DadosCadastroHorario {
   };
 }
 
+// Confere a chave do horário e o novo status informado pela secretária
+function lerAlteracaoStatus(corpo: unknown): AlteracaoStatusHorario {
+  const { Médico, Data, HoraInicio, Status } = (corpo ?? {}) as Record<string, unknown>;
+  const codigoMedico = (Médico as { Código?: unknown } | undefined)?.Código;
+
+  if (
+    !Number.isInteger(codigoMedico) ||
+    typeof Data !== 'string' ||
+    !FORMATO_DATA.test(Data) ||
+    typeof HoraInicio !== 'string' ||
+    !FORMATO_HORA.test(HoraInicio) ||
+    (Status !== 'Liberado' && Status !== 'Bloqueado')
+  ) {
+    throw new ErroHttp(
+      400,
+      'Informe Médico.Código (número), Data (AAAA-MM-DD), HoraInicio (HH:MM) e Status (Liberado ou Bloqueado).',
+    );
+  }
+
+  return {
+    Médico: { Código: codigoMedico as number },
+    Data,
+    HoraInicio,
+    Status,
+  };
+}
+
 // GET /gerenciamento/horarios: todos os horários para o gerenciamento da secretária
 router.get('/gerenciamento/horarios', async (_req, res) => {
   res.json(await listarHorariosGerenciamento());
@@ -64,6 +92,11 @@ router.get('/gerenciamento/horarios', async (_req, res) => {
 router.post('/gerenciamento/horarios', async (req, res) => {
   const novo = await cadastrarHorario(lerDadosCadastro(req.body));
   res.status(201).json(novo);
+});
+
+// PATCH /gerenciamento/horarios/status: libera ou bloqueia um horário existente
+router.patch('/gerenciamento/horarios/status', async (req, res) => {
+  res.json(await alterarStatusHorario(lerAlteracaoStatus(req.body)));
 });
 
 // GET /horarios?CNPJ=...&Especialidade=...&Data=AAAA-MM-DD

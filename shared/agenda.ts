@@ -59,6 +59,12 @@ export type ChaveHorario = {
   HoraInicio: string;
 };
 
+// Alteração permitida pela secretária no gerenciamento de horários
+export type StatusGerenciamentoHorario = Exclude<StatusHorario, 'Reservado'>;
+export type AlteracaoStatusHorario = ChaveHorario & {
+  Status: StatusGerenciamentoHorario;
+};
+
 export type Solicitacao = ChaveHorario & {
   Código: number;
   Paciente: RefPaciente;

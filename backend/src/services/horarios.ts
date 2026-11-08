@@ -4,6 +4,7 @@
 import { clinicas, horarios, medicos, STATUS_HORARIO } from '../mocks/banco.js';
 import { ErroHttp } from '../erros.js';
 import type {
+  AlteracaoStatusHorario,
   Clinica,
   DadosCadastroHorario,
   FiltrosHorarios,
@@ -80,6 +81,28 @@ export async function cadastrarHorario(
   };
   horarios.push(novo);
   return detalharHorario(novo);
+}
+
+// Libera ou bloqueia um horário existente
+export async function alterarStatusHorario(
+  alteracao: AlteracaoStatusHorario,
+): Promise<HorarioDetalhado> {
+  const horario = horarios.find(
+    (item) =>
+      item.Médico.Código === alteracao.Médico.Código &&
+      item.Data === alteracao.Data &&
+      item.HoraInicio === alteracao.HoraInicio,
+  );
+  if (!horario) {
+    throw new ErroHttp(404, 'Horário não encontrado.');
+  }
+
+  if (horario.Status === STATUS_HORARIO.RESERVADO) {
+    throw new ErroHttp(409, 'Horários reservados não podem ser liberados ou bloqueados.');
+  }
+
+  horario.Status = alteracao.Status;
+  return detalharHorario(horario);
 }
 
 // Busca os horários que o paciente pode escolher

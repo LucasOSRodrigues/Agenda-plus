@@ -58,6 +58,7 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 | --- | --- | --- |
 | GET | `/gerenciamento/horarios` | Todos os horários para gerenciamento, incluindo liberados, bloqueados e reservados |
 | POST | `/gerenciamento/horarios` | Cadastra um horário bloqueado. Corpo: `{ "Médico": { "Código": 1 }, "Clinica": { "CNPJ": "..." }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM", "HoraFim": "HH:MM" }` |
+| PATCH | `/gerenciamento/horarios/status` | Libera ou bloqueia um horário. Corpo: `{ "Médico": { "Código": 1 }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM", "Status": "Liberado" }` |
 | GET | `/horarios?CNPJ=&Especialidade=&Data=` | Horários disponíveis (filtros opcionais, `Data` em AAAA-MM-DD) |
 | GET | `/clinicas` | Opções do filtro de clínica |
 | GET | `/especialidades` | Opções do filtro de especialidade |
