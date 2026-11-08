@@ -42,6 +42,10 @@ export type Horario = {
   Status: StatusHorario;
 };
 
+// Dados informados pela secretária ao cadastrar um horário
+// O status é definido pelo sistema
+export type DadosCadastroHorario = Omit<Horario, 'Status'>;
+
 // Horário como volta para a tela: com Médico e Clinica completos
 export type HorarioDetalhado = Omit<Horario, 'Médico' | 'Clinica'> & {
   Médico: Medico;
@@ -53,6 +57,12 @@ export type ChaveHorario = {
   Médico: RefMedico;
   Data: string;
   HoraInicio: string;
+};
+
+// Alteração permitida pela secretária no gerenciamento de horários
+export type StatusGerenciamentoHorario = Exclude<StatusHorario, 'Reservado'>;
+export type AlteracaoStatusHorario = ChaveHorario & {
+  Status: StatusGerenciamentoHorario;
 };
 
 export type Solicitacao = ChaveHorario & {
