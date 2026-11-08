@@ -10,6 +10,7 @@ export const ROTAS = {
   clinicas: `${API_URL}/clinicas`,
   medicos: `${API_URL}/medicos`,
   especialidades: `${API_URL}/especialidades`,
+  pacientes: `${API_URL}/pacientes`,
   solicitacoes: `${API_URL}/solicitacoes`,
   chavesSolicitadas: `${API_URL}/solicitacoes/chaves`,
   solicitacao: (codigo: number) => `${API_URL}/solicitacoes/${codigo}`,

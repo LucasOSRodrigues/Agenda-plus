@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 
@@ -54,6 +55,9 @@ export default function LoginPage() {
 
           <button type="submit">Entrar</button>
         </form>
+                <p className="form-message">
+          Ainda não tem conta? <Link href="/cadastro">Cadastre-se</Link>
+        </p>
       </section>
     </main>
   );

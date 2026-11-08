@@ -63,6 +63,7 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 | GET | `/clinicas` | Opções do filtro de clínica |
 | GET | `/medicos` | Opções do campo de médico no cadastro de horários |
 | GET | `/especialidades` | Opções do filtro de especialidade |
+| POST | `/pacientes` | Cadastra um paciente (H02). Corpo: `{ "Nome": "...", "CPF": "11 números", "E-mail": "...", "Telefone": "DDD + número", "DataNascimento": "AAAA-MM-DD", "Senha": "mín. 8 caracteres" }`. Responde 201 sem a senha; 400 (dados inválidos) ou 409 (CPF/e-mail já cadastrado) |
 | GET | `/solicitacoes` | Solicitações do paciente logado |
 | GET | `/solicitacoes/chaves` | Chaves (`Médico-Data-HoraInicio`) dos horários já solicitados |
 | POST | `/solicitacoes` | Cria uma solicitação. Corpo: `{ "Médico": { "Código": 1 }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM" }` |

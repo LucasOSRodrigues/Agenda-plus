@@ -86,3 +86,18 @@ export type FiltrosHorarios = {
   Especialidade?: string;
   Data?: string;
 };
+
+
+// Paciente (subclasse de Usuário): Código e Nome vêm de Usuário
+export type Paciente = {
+  Código: number;
+  Nome: string;
+  CPF: string; // só os 11 números
+  'E-mail': string;
+  Telefone: string; // só os números, com DDD
+  DataNascimento: string; // AAAA-MM-DD
+};
+
+// Dados informados pelo paciente ao se cadastrar (H02)
+// O Código é definido pelo sistema e a Senha nunca volta da API
+export type DadosCadastroPaciente = Omit<Paciente, 'Código'> & { Senha: string };
