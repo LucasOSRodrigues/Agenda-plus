@@ -525,3 +525,49 @@ a.atalho:hover {
 .horario-acao .botao-secundario {
   margin-top: 0;
 }
+
+/* Tela de gerenciamento de horários (/gerenciamento/horarios) */
+
+.gerenciamento-card {
+  max-width: 900px;
+}
+
+.horario-hora-gerenciamento {
+  flex-shrink: 0;
+  width: 168px;
+  white-space: normal;
+}
+
+.status-liberado {
+  background: #dff3e6;
+  color: #1d6b3a;
+}
+
+.status-bloqueado {
+  background: #fbe3e3;
+  color: #8a2525;
+}
+
+.status-reservado {
+  background: #fff1cc;
+  color: #7a5300;
+}
+
+.gerenciamento-sem-acao {
+  color: #6d7c75;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.horario-acao .botao-secundario:disabled {
+  border-color: #9fb3ab;
+  background: #f1f6f3;
+  color: #6d7c75;
+  cursor: wait;
+}
+
+@media (max-width: 640px) {
+  .horario-hora-gerenciamento {
+    width: auto;
+  }
+}

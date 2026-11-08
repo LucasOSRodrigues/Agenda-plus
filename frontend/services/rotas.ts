@@ -5,6 +5,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 export const ROTAS = {
   horarios: `${API_URL}/horarios`,
+  horariosGerenciamento: `${API_URL}/gerenciamento/horarios`,
+  statusHorarioGerenciamento: `${API_URL}/gerenciamento/horarios/status`,
   clinicas: `${API_URL}/clinicas`,
   especialidades: `${API_URL}/especialidades`,
   solicitacoes: `${API_URL}/solicitacoes`,
