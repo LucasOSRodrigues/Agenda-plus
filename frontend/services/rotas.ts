@@ -8,6 +8,7 @@ export const ROTAS = {
   horariosGerenciamento: `${API_URL}/gerenciamento/horarios`,
   statusHorarioGerenciamento: `${API_URL}/gerenciamento/horarios/status`,
   clinicas: `${API_URL}/clinicas`,
+  medicos: `${API_URL}/medicos`,
   especialidades: `${API_URL}/especialidades`,
   solicitacoes: `${API_URL}/solicitacoes`,
   chavesSolicitadas: `${API_URL}/solicitacoes/chaves`,

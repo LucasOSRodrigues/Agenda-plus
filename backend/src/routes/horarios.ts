@@ -8,6 +8,7 @@ import {
   listarClinicas,
   listarEspecialidades,
   listarHorariosGerenciamento,
+  listarMedicos,
 } from '../services/horarios.js';
 import type { AlteracaoStatusHorario, DadosCadastroHorario } from '@shared/agenda';
 
@@ -113,6 +114,11 @@ router.get('/horarios', async (req, res) => {
 // GET /clinicas: opções do filtro de clínica
 router.get('/clinicas', async (_req, res) => {
   res.json(await listarClinicas());
+});
+
+// GET /medicos: opções do campo de médico no cadastro de horários
+router.get('/medicos', async (_req, res) => {
+  res.json(await listarMedicos());
 });
 
 // GET /especialidades: opções do filtro de especialidade

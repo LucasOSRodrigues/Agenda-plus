@@ -141,6 +141,11 @@ export async function listarClinicas(): Promise<Clinica[]> {
   return [...clinicas].sort((a, b) => compararTexto(a.Nome, b.Nome));
 }
 
+// Opções do campo de médico no cadastro de horários
+export async function listarMedicos(): Promise<Medico[]> {
+  return [...medicos].sort((a, b) => compararTexto(a.Nome, b.Nome));
+}
+
 // Opções do filtro de especialidade, sem repetição
 export async function listarEspecialidades(): Promise<string[]> {
   const especialidades = new Set(medicos.map((medico) => medico.Especialidade));

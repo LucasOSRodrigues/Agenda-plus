@@ -4,8 +4,10 @@
 import type {
   AlteracaoStatusHorario,
   Clinica,
+  DadosCadastroHorario,
   FiltrosHorarios,
   HorarioDetalhado,
+  Medico,
 } from '@shared/agenda';
 import { ROTAS } from './rotas';
 
@@ -29,6 +31,19 @@ export async function alterarStatusHorario(
   return resposta.json();
 }
 
+// Cadastra um horário inicialmente bloqueado
+export async function cadastrarHorario(
+  dados: DadosCadastroHorario,
+): Promise<HorarioDetalhado> {
+  const resposta = await fetch(ROTAS.horariosGerenciamento, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
+}
+
 // Horários que o paciente pode escolher, já ordenados e com Médico e Clinica completos
 // Filtros vazios não são enviados (vazio = não filtra)
 export async function buscarHorariosDisponiveis(
@@ -47,6 +62,13 @@ export async function buscarHorariosDisponiveis(
 // Opções do filtro de clínica
 export async function listarClinicas(): Promise<Clinica[]> {
   const resposta = await fetch(ROTAS.clinicas);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
+}
+
+// Opções do campo de médico no cadastro de horários
+export async function listarMedicos(): Promise<Medico[]> {
+  const resposta = await fetch(ROTAS.medicos);
   if (!resposta.ok) throw new Error((await resposta.json()).erro);
   return resposta.json();
 }
