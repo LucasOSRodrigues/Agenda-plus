@@ -1,69 +1,34 @@
-// Serviço de consulta de horários usado pela tela /horarios.
-// Por enquanto as funções utilizam os dados fictícios de mocks/banco.ts
+// Serviço de consulta de horários usado pela tela /horarios
+// Os dados vêm da API do backend (caminhos em services/rotas.ts)
 
-import { clinicas, horarios, medicos, STATUS_HORARIO } from '../mocks/banco';
-import type {
-  Clinica,
-  FiltrosHorarios,
-  Horario,
-  HorarioDetalhado,
-  Medico,
-} from '../types/agenda';
+import type { Clinica, FiltrosHorarios, HorarioDetalhado } from '@shared/agenda';
+import { ROTAS } from './rotas';
 
-function compararTexto(a: string, b: string): number {
-  return a.localeCompare(b, 'pt-BR');
-}
+// Horários que o paciente pode escolher, já ordenados e com Médico e Clinica completos
+// Filtros vazios não são enviados (vazio = não filtra)
+export async function buscarHorariosDisponiveis(
+  filtros: FiltrosHorarios = {},
+): Promise<HorarioDetalhado[]> {
+  const query = new URLSearchParams();
+  for (const [nome, valor] of Object.entries(filtros)) {
+    if (valor) query.set(nome, valor);
+  }
 
-// Momento em que o horário começa, no fuso do navegador
-function inicioDoHorario(horario: Pick<Horario, 'Data' | 'HoraInicio'>): Date {
-  return new Date(`${horario.Data}T${horario.HoraInicio}`);
-}
-
-// Busca os horários que o paciente pode escolher
-// Cada horário volta com o Médico e a Clinica completos, para a tela
-// mostrar nome, especialidade e endereço
-export async function buscarHorariosDisponiveis({
-  CNPJ,
-  Especialidade,
-  Data,
-}: FiltrosHorarios = {}): Promise<HorarioDetalhado[]> {
-  const agora = new Date();
-
-  return horarios
-    // O paciente vê apenas horários liberados e ainda não ocupados
-    // Horários bloqueados, reservados ou que já começaram ficam de fora
-    .filter((horario) => horario.Status === STATUS_HORARIO.LIBERADO)
-    .filter((horario) => inicioDoHorario(horario) > agora)
-    .map(
-      (horario): HorarioDetalhado => ({
-        ...horario,
-        // Todo horário do mock aponta para um médico e uma clínica existentes
-        Médico: medicos.find((medico) => medico.Código === horario.Médico.Código) as Medico,
-        Clinica: clinicas.find((clinica) => clinica.CNPJ === horario.Clinica.CNPJ) as Clinica,
-      }),
-    )
-    // Filtros opcionais (vazio = não filtra):
-    // - CNPJ: só horários fornecidos por esta clínica
-    // - Especialidade: só horários de médicos desta especialidade
-    // - Data: só horários deste dia (AAAA-MM-DD)
-    .filter((horario) => !CNPJ || horario.Clinica.CNPJ === CNPJ)
-    .filter((horario) => !Especialidade || horario.Médico.Especialidade === Especialidade)
-    .filter((horario) => !Data || horario.Data === Data)
-    .sort(
-      (a, b) =>
-        compararTexto(a.Data, b.Data) ||
-        compararTexto(a.HoraInicio, b.HoraInicio) ||
-        compararTexto(a.Médico.Nome, b.Médico.Nome),
-    );
+  const resposta = await fetch(`${ROTAS.horarios}?${query}`);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
 
 // Opções do filtro de clínica
 export async function listarClinicas(): Promise<Clinica[]> {
-  return [...clinicas].sort((a, b) => compararTexto(a.Nome, b.Nome));
+  const resposta = await fetch(ROTAS.clinicas);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
 
 // Opções do filtro de especialidade, sem repetição
 export async function listarEspecialidades(): Promise<string[]> {
-  const especialidades = new Set(medicos.map((medico) => medico.Especialidade));
-  return [...especialidades].sort(compararTexto);
+  const resposta = await fetch(ROTAS.especialidades);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }

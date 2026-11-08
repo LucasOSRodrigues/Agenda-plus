@@ -13,7 +13,7 @@ import {
   listarEspecialidades,
 } from '../../services/horarios';
 import { listarChavesSolicitadas, solicitarAgendamento } from '../../services/solicitacoes';
-import type { ChaveHorario, Clinica, HorarioDetalhado } from '../../types/agenda';
+import type { ChaveHorario, Clinica, HorarioDetalhado } from '@shared/agenda';
 
 type Filtros = { CNPJ: string; Especialidade: string; Data: string };
 type Aviso = { texto: string; sucesso: boolean };

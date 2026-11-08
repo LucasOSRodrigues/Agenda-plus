@@ -1,6 +1,9 @@
 // Configuração da API: middlewares e rotas
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import { ErroHttp } from './erros.js';
+import rotasHorarios from './routes/horarios.js';
+import rotasSolicitacoes from './routes/solicitacoes.js';
 
 const app = express();
 
@@ -15,13 +18,26 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.use(rotasHorarios);
+app.use(rotasSolicitacoes);
+
 // Nenhuma rota atendeu à requisição
 app.use((_req, res) => {
   res.status(404).json({ erro: 'Rota não encontrada.' });
 });
 
-// O Express identifica o tratador de erros pelos 4 parâmetros
+
 app.use((erro: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  // Erros esperados (regra de negócio, validação) voltam com a mensagem para o cliente
+  if (erro instanceof ErroHttp) {
+    res.status(erro.status).json({ erro: erro.message });
+    return;
+  }
+  // JSON malformado no corpo da requisição
+  if (erro instanceof SyntaxError && 'body' in erro) {
+    res.status(400).json({ erro: 'Corpo da requisição não é um JSON válido.' });
+    return;
+  }
   console.error(erro);
   res.status(500).json({ erro: 'Erro interno do servidor.' });
 });
