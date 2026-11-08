@@ -66,6 +66,21 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 
 Os erros voltam no formato `{ "erro": "mensagem" }`, com status 400 (dados inválidos), 404 (não encontrado) ou 409 (regra de negócio, ex.: horário indisponível).
 
+## Como rodar o front-end
+
+Com o back-end já rodando, em outro terminal:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+npm run dev
+```
+
+O site fica disponível em `http://localhost:3000`. A variável `NEXT_PUBLIC_API_URL` do `.env` indica onde está a API (padrão `http://localhost:3001`). Se mudar a porta do back-end, atualize essa variável e o `FRONTEND_URL` do back-end.
+
+As chamadas à API ficam em `frontend/services/`, e os caminhos ficam em `frontend/services/rotas.ts`. As páginas só usam as funções dos services.
+
 ## Quadro Kanban
 
 (https://github.com/users/LucasOSRodrigues/projects/5)
