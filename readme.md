@@ -56,6 +56,7 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 
 | Método | Rota | Descrição |
 | --- | --- | --- |
+| GET | `/gerenciamento/horarios` | Todos os horários para gerenciamento, incluindo liberados, bloqueados e reservados |
 | GET | `/horarios?CNPJ=&Especialidade=&Data=` | Horários disponíveis (filtros opcionais, `Data` em AAAA-MM-DD) |
 | GET | `/clinicas` | Opções do filtro de clínica |
 | GET | `/especialidades` | Opções do filtro de especialidade |

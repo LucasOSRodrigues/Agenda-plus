@@ -4,6 +4,7 @@ import {
   buscarHorariosDisponiveis,
   listarClinicas,
   listarEspecialidades,
+  listarHorariosGerenciamento,
 } from '../services/horarios.js';
 
 const router = Router();
@@ -12,6 +13,11 @@ const router = Router();
 function textoDaQuery(valor: unknown): string | undefined {
   return typeof valor === 'string' && valor !== '' ? valor : undefined;
 }
+
+// GET /gerenciamento/horarios: todos os horários para o gerenciamento da secretária
+router.get('/gerenciamento/horarios', async (_req, res) => {
+  res.json(await listarHorariosGerenciamento());
+});
 
 // GET /horarios?CNPJ=...&Especialidade=...&Data=AAAA-MM-DD
 // Horários disponíveis, com Médico e Clinica completos. Todos os filtros são opcionais

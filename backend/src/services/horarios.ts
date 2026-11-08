@@ -14,9 +14,32 @@ function compararTexto(a: string, b: string): number {
   return a.localeCompare(b, 'pt-BR');
 }
 
+// Troca as referências pelas informações completas do médico e da clínica
+function detalharHorario(horario: Horario): HorarioDetalhado {
+  return {
+    ...horario,
+    // Todo horário do mock aponta para um médico e uma clínica existentes
+    Médico: medicos.find((medico) => medico.Código === horario.Médico.Código) as Medico,
+    Clinica: clinicas.find((clinica) => clinica.CNPJ === horario.Clinica.CNPJ) as Clinica,
+  };
+}
+
 // Momento em que o horário começa, no fuso do servidor
 function inicioDoHorario(horario: Pick<Horario, 'Data' | 'HoraInicio'>): Date {
   return new Date(`${horario.Data}T${horario.HoraInicio}`);
+}
+
+// Lista todos os horários para o gerenciamento da secretária
+// Diferente da consulta do paciente, inclui liberados, bloqueados e reservados
+export async function listarHorariosGerenciamento(): Promise<HorarioDetalhado[]> {
+  return horarios
+    .map(detalharHorario)
+    .sort(
+      (a, b) =>
+        compararTexto(a.Data, b.Data) ||
+        compararTexto(a.HoraInicio, b.HoraInicio) ||
+        compararTexto(a.Médico.Nome, b.Médico.Nome),
+    );
 }
 
 // Busca os horários que o paciente pode escolher
@@ -34,14 +57,7 @@ export async function buscarHorariosDisponiveis({
     // Horários bloqueados, reservados ou que já começaram ficam de fora
     .filter((horario) => horario.Status === STATUS_HORARIO.LIBERADO)
     .filter((horario) => inicioDoHorario(horario) > agora)
-    .map(
-      (horario): HorarioDetalhado => ({
-        ...horario,
-        // Todo horário do mock aponta para um médico e uma clínica existentes
-        Médico: medicos.find((medico) => medico.Código === horario.Médico.Código) as Medico,
-        Clinica: clinicas.find((clinica) => clinica.CNPJ === horario.Clinica.CNPJ) as Clinica,
-      }),
-    )
+    .map(detalharHorario)
     // Filtros opcionais (vazio = não filtra):
     // - CNPJ: só horários fornecidos por esta clínica
     // - Especialidade: só horários de médicos desta especialidade
