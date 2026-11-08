@@ -625,3 +625,16 @@ a.atalho:hover {
     width: auto;
   }
 }
+
+
+/* Tela de cadastro do paciente (/cadastro) e link na tela de login */
+
+.login-card button:disabled {
+  background: #9fb3ab;
+  cursor: wait;
+}
+
+.form-message a {
+  color: #004e5b;
+  font-weight: 600;
+}
