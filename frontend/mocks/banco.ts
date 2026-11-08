@@ -1,16 +1,18 @@
 // Dados fictícios usados enquanto o banco de dados não é implementado
 // Os nomes das entidades e dos atributos seguem o diagrama ERE do TP1 de BD1
 
+import type { Clinica, Horario, Medico, Solicitacao } from '../types/agenda';
+
 // Valores do atributo Status de Horário
 export const STATUS_HORARIO = {
   LIBERADO: 'Liberado',
   BLOQUEADO: 'Bloqueado',
   RESERVADO: 'Reservado',
-};
+} as const;
 
 // Clinica: CNPJ (chave), Nome, Endereço (Logradouro, Número, Bairro, Cidade)
 // e E-mail (multivalorado)
-export const clinicas = [
+export const clinicas: Clinica[] = [
   {
     CNPJ: '11222333000181',
     Nome: 'Clínica Centro',
@@ -40,7 +42,7 @@ export const clinicas = [
 
 // Médico (subclasse de Usuário)
 // De Usuário: Código (chave) e Nome. De Médico: CRM, UFCRM e Especialidade
-export const medicos = [
+export const medicos: Medico[] = [
   { Código: 1, Nome: 'Ana Paula Ribeiro', CRM: '45821', UFCRM: 'MG', Especialidade: 'Clínica Geral' },
   { Código: 2, Nome: 'Carlos Eduardo Lima', CRM: '38107', UFCRM: 'MG', Especialidade: 'Cardiologia' },
   { Código: 3, Nome: 'Fernanda Costa', CRM: '51234', UFCRM: 'MG', Especialidade: 'Pediatria' },
@@ -49,7 +51,7 @@ export const medicos = [
 
 // Data no formato AAAA-MM-DD, contando a partir de hoje
 // Assim os horários fictícios nunca ficam todos no passado
-function diasAPartirDeHoje(dias) {
+function diasAPartirDeHoje(dias: number): string {
   const data = new Date();
   data.setDate(data.getDate() + dias);
   const ano = data.getFullYear();
@@ -67,7 +69,7 @@ const CLINICA_BAUXITA = { CNPJ: '44555666000172' };
 // Clinica: clínica que fornece o horário, pelo relacionamento "Fornece"
 const { LIBERADO, BLOQUEADO, RESERVADO } = STATUS_HORARIO;
 
-export const horarios = [
+export const horarios: Horario[] = [
   { Médico: { Código: 1 }, Clinica: CLINICA_CENTRO, Data: diasAPartirDeHoje(1), HoraInicio: '08:00', HoraFim: '08:30', Status: LIBERADO },
   { Médico: { Código: 1 }, Clinica: CLINICA_CENTRO, Data: diasAPartirDeHoje(1), HoraInicio: '08:30', HoraFim: '09:00', Status: RESERVADO },
   { Médico: { Código: 1 }, Clinica: CLINICA_CENTRO, Data: diasAPartirDeHoje(1), HoraInicio: '09:00', HoraFim: '09:30', Status: LIBERADO },
@@ -98,20 +100,20 @@ export const STATUS_SOLICITACAO = {
   PENDENTE: 'Pendente',
   CONFIRMADA: 'Confirmada',
   RECUSADA: 'Recusada',
-};
+} as const;
 
 // Provisório: ainda não há autenticação, então o paciente logado é sempre este
 export const PACIENTE_LOGADO = { Código: 100 };
 
 // Momento X horas atrás, em formato ISO (para a data em que a solicitação foi feita)
-function horasAtras(horas) {
+function horasAtras(horas: number): string {
   return new Date(Date.now() - horas * 60 * 60 * 1000).toISOString();
 }
 
 // Solicitação: Código (chave), Paciente (quem pediu), Médico + Data + HoraInicio
 // (o Horário escolhido), DataSolicitacao, Status e Justificativa
 // A Justificativa só é preenchida quando o Status é Recusada (informada pelo secretário)
-export const solicitacoes = [
+export const solicitacoes: Solicitacao[] = [
   {
     Código: 1,
     Paciente: { Código: 100 },

@@ -1,6 +1,8 @@
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import './globals.css';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Agenda+',
   description: 'Acesse sua conta no Agenda+.',
   icons: {
@@ -9,7 +11,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <body>{children}</body>

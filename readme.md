@@ -21,8 +21,8 @@ O sistema é dividido em quatro portais:
 
 ## Tecnologias e estrutura inicial
 
-- **Front-end:** Next.js com React e JavaScript.
-- **Back-end:** Node.js com Express, em uma aplicação separada do front-end.
+- **Front-end:** Next.js com React e TypeScript.
+- **Back-end:** Node.js com Express e TypeScript, em uma aplicação separada do front-end.
 
 ```text
 frontend/   Front-end e seu package.json
@@ -40,6 +40,8 @@ npm install
 cp .env.example .env
 npm run dev
 ```
+
+O `npm run dev` roda o TypeScript direto com o `tsx` e reinicia a cada alteração. Para produção, use `npm run build` (gera o JavaScript em `dist/`) e depois `npm start`. Para só verificar os tipos, use `npm run typecheck`.
 
 A API fica disponível em `http://localhost:3001`. Para testar, acesse `http://localhost:3001/health`, que deve responder `{"status":"ok"}`.
 

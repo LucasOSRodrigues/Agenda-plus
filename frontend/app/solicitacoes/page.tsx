@@ -9,16 +9,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cancelarSolicitacao, listarSolicitacoesDoPaciente } from '../../services/solicitacoes';
 import { STATUS_SOLICITACAO } from '../../mocks/banco';
+import type { SolicitacaoDetalhada, StatusSolicitacao } from '../../types/agenda';
+
+type Aviso = { texto: string; sucesso: boolean };
 
 // Classe de cor de cada status (ver .status-* no globals.css)
-const CLASSE_STATUS = {
+const CLASSE_STATUS: Record<StatusSolicitacao, string> = {
   [STATUS_SOLICITACAO.PENDENTE]: 'status-pendente',
   [STATUS_SOLICITACAO.CONFIRMADA]: 'status-confirmada',
   [STATUS_SOLICITACAO.RECUSADA]: 'status-recusada',
 };
 
 // Transforma a data (AAAA-MM-DD) em texto, ex.: "Quarta-feira, 5 de novembro"
-function formatarData(data) {
+function formatarData(data: string): string {
   const texto = new Date(`${data}T00:00`).toLocaleDateString('pt-BR', {
     weekday: 'long',
     day: 'numeric',
@@ -28,11 +31,11 @@ function formatarData(data) {
 }
 
 export default function MinhasSolicitacoesPage() {
-  const [solicitacoes, setSolicitacoes] = useState([]);
+  const [solicitacoes, setSolicitacoes] = useState<SolicitacaoDetalhada[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   // Resultado do último cancelamento: { texto, sucesso }
-  const [aviso, setAviso] = useState(null);
+  const [aviso, setAviso] = useState<Aviso | null>(null);
 
   async function carregar() {
     try {
@@ -51,14 +54,14 @@ export default function MinhasSolicitacoesPage() {
   }, []);
 
   // Cancela a solicitação depois de o paciente confirmar
-  async function cancelar(solicitacao) {
+  async function cancelar(solicitacao: SolicitacaoDetalhada) {
     if (!window.confirm('Cancelar esta solicitação de consulta?')) return;
     setAviso(null);
     try {
       await cancelarSolicitacao(solicitacao.Código);
       setAviso({ texto: 'Solicitação cancelada.', sucesso: true });
     } catch (e) {
-      setAviso({ texto: e.message, sucesso: false });
+      setAviso({ texto: (e as Error).message, sucesso: false });
     }
     await carregar();
   }
