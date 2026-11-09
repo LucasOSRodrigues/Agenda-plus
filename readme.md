@@ -64,6 +64,7 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 | GET | `/medicos` | Opções do campo de médico no cadastro de horários |
 | GET | `/especialidades` | Opções do filtro de especialidade |
 | POST | `/pacientes` | Cadastra um paciente (H02). Corpo: `{ "Nome": "...", "CPF": "11 números", "E-mail": "...", "Telefone": "DDD + número", "DataNascimento": "AAAA-MM-DD", "Senha": "mín. 8 caracteres" }`. Responde 201 sem a senha; 400 (dados inválidos) ou 409 (CPF/e-mail já cadastrado) |
+| POST | `/equipe` | Cadastra um médico ou secretário (H14). Corpo: `{ "Papel": "Médico" ou "Secretário", "Nome": "...", "CPF": "11 números", "E-mail": "...", "Telefone": "DDD + número", "Senha": "mín. 8 caracteres" }`. Para médico, também `"CRM"` (números), `"UFCRM"` (ex.: `"MG"`) e `"Especialidade"`. Responde 201 sem a senha; 400 (dados inválidos) ou 409 (CPF, e-mail ou CRM já cadastrado). O médico cadastrado passa a aparecer em `/medicos`. Provisório: ainda sem login, qualquer pessoa pode chamar; deve ficar restrita ao administrador |
 | GET | `/solicitacoes` | Solicitações do paciente logado |
 | GET | `/solicitacoes/chaves` | Chaves (`Médico-Data-HoraInicio`) dos horários já solicitados |
 | POST | `/solicitacoes` | Cria uma solicitação. Corpo: `{ "Médico": { "Código": 1 }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM" }` |
@@ -83,6 +84,8 @@ npm run dev
 ```
 
 O site fica disponível em `http://localhost:3000`. A variável `NEXT_PUBLIC_API_URL` do `.env` indica onde está a API (padrão `http://localhost:3001`). Se mudar a porta do back-end, atualize essa variável e o `FRONTEND_URL` do back-end.
+
+A tela de cadastro da equipe fica em `http://localhost:3000/administracao/equipe` (por enquanto sem link nem proteção, até existir o login).
 
 As chamadas à API ficam em `frontend/services/`, e os caminhos ficam em `frontend/services/rotas.ts`. As páginas só usam as funções dos services.
 

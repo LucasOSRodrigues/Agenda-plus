@@ -11,6 +11,7 @@ export const ROTAS = {
   medicos: `${API_URL}/medicos`,
   especialidades: `${API_URL}/especialidades`,
   pacientes: `${API_URL}/pacientes`,
+  equipe: `${API_URL}/equipe`,
   solicitacoes: `${API_URL}/solicitacoes`,
   chavesSolicitadas: `${API_URL}/solicitacoes/chaves`,
   solicitacao: (codigo: number) => `${API_URL}/solicitacoes/${codigo}`,
