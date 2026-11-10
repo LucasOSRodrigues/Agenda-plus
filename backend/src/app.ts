@@ -5,6 +5,7 @@ import { ErroHttp } from './erros.js';
 import rotasHorarios from './routes/horarios.js';
 import rotasSolicitacoes from './routes/solicitacoes.js';
 import rotasPacientes from './routes/pacientes.js';
+import rotasEquipe from './routes/equipe.js';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/health', (_req, res) => {
 app.use(rotasHorarios);
 app.use(rotasSolicitacoes);
 app.use(rotasPacientes);
+app.use(rotasEquipe);
 
 // Nenhuma rota atendeu à requisição
 app.use((_req, res) => {

@@ -2,9 +2,9 @@
 // Os pacientes ficam só em memória: reiniciar o servidor apaga os cadastros.
 // Quando o banco existir, basta trocar o corpo desta função e manter a assinatura.
 
-import { randomBytes, scryptSync } from 'node:crypto';
 import { PACIENTE_LOGADO } from '../mocks/banco.js';
 import { ErroHttp } from '../erros.js';
+import { gerarHashSenha } from '../senhas.js';
 import type { DadosCadastroPaciente, Paciente } from '@shared/agenda';
 
 // A senha nunca é guardada em texto puro: só o hash (formato "sal:hash")
@@ -14,9 +14,13 @@ let pacientes: PacienteArmazenado[] = [];
 // O 100 já é usado pelo paciente fictício dos mocks, então os novos começam depois dele
 let proximoCodigo = PACIENTE_LOGADO.Código + 1;
 
-function gerarHashSenha(senha: string): string {
-  const sal = randomBytes(16).toString('hex');
-  return `${sal}:${scryptSync(senha, sal, 64).toString('hex')}`;
+// Usadas pelo cadastro da equipe (H14), para CPF e e-mail não se repetirem entre usuários
+export function existePacienteComCpf(cpf: string): boolean {
+  return pacientes.some((p) => p.CPF === cpf);
+}
+
+export function existePacienteComEmail(email: string): boolean {
+  return pacientes.some((p) => p['E-mail'].toLowerCase() === email.toLowerCase());
 }
 
 // Cadastra o paciente, recusando CPF ou e-mail que já existem

@@ -101,3 +101,39 @@ export type Paciente = {
 // Dados informados pelo paciente ao se cadastrar (H02)
 // O Código é definido pelo sistema e a Senha nunca volta da API
 export type DadosCadastroPaciente = Omit<Paciente, 'Código'> & { Senha: string };
+
+// Papéis dos usuários do sistema
+// O login (H01) vai usar o papel para decidir quais funções cada usuário vê
+export type Papel = 'Paciente' | 'Médico' | 'Secretário' | 'Administrador';
+
+// Papéis da equipe da clínica, cadastrados pelo administrador (H14)
+export type PapelEquipe = Extract<Papel, 'Médico' | 'Secretário'>;
+
+type DadosBaseEquipe = {
+  Nome: string;
+  CPF: string; // só os 11 números
+  'E-mail': string;
+  Telefone: string; // só os números, com DDD
+  Senha: string;
+};
+
+// Dados informados pelo administrador ao cadastrar um membro da equipe (H14)
+// Só o médico tem CRM, UFCRM e Especialidade. O Código é definido pelo sistema
+export type DadosCadastroEquipe =
+  | (DadosBaseEquipe & { Papel: 'Secretário' })
+  | (DadosBaseEquipe & {
+      Papel: 'Médico';
+      CRM: string; // só números
+      UFCRM: string; // sigla da UF, ex.: MG
+      Especialidade: string;
+    });
+
+// Membro da equipe como volta da API: nunca traz a Senha
+export type MembroEquipe = {
+  Código: number;
+  Nome: string;
+  CPF: string;
+  'E-mail': string;
+  Telefone: string;
+  Papel: PapelEquipe;
+};
