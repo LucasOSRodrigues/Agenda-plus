@@ -50,6 +50,21 @@ A API fica disponível em `http://localhost:3001`. Para testar, acesse `http://l
 
 O arquivo `.env` guarda as configurações locais e não vai para o Git. Sem ele, o `npm run dev` falha com o erro `ENOENT`. Ao adicionar uma variável nova, inclua-a também no `.env.example`, sem valores reais de senhas ou chaves.
 
+### Testes do back-end
+
+Os testes usam o Vitest e ficam em `backend/tests/`, separados do código em `src/`. Não precisam do `.env` nem do servidor rodando:
+
+```bash
+cd backend
+npm test
+```
+
+Para rodar os testes de novo a cada alteração salva, use `npm run test:watch`. Para ver a cobertura (quanto do código os testes executam), use `npm run test:coverage`.
+
+- `tests/services/`: testes de unidade dos serviços.
+- `tests/routes/`: testes de integração das rotas, que chamam a API sem ligar o servidor (supertest).
+- `tests/fixtures/`: dados fixos que substituem os dados fictícios durante os testes (mock), para eles não dependerem da data de hoje nem quebrarem quando os dados fictícios mudarem.
+
 ### Rotas da API
 
 Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts`). Reiniciar o servidor volta tudo ao estado inicial.
