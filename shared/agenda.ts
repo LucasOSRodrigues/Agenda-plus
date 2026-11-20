@@ -80,6 +80,18 @@ export type SolicitacaoDetalhada = Omit<Solicitacao, 'Médico'> & {
   Clinica: Clinica | undefined;
 };
 
+// Decisão da secretária sobre uma solicitação pendente (H08)
+// Recusar exige justificativa, que fica visível para o paciente
+export type DecisaoSolicitacao =
+  | { Status: 'Confirmada' }
+  | { Status: 'Recusada'; Justificativa: string };
+
+// Solicitação como volta para o gerenciamento da secretária:
+// além dos detalhes do horário, traz o nome do paciente que pediu
+export type SolicitacaoGerenciamento = Omit<SolicitacaoDetalhada, 'Paciente'> & {
+  Paciente: { Código: number; Nome: string };
+};
+
 // Filtros da busca de horários (vazio = não filtra)
 export type FiltrosHorarios = {
   CNPJ?: string;
