@@ -1,13 +1,16 @@
-// Rotas das solicitações de agendamento do paciente logado
+// Rotas das solicitações de agendamento: as do paciente logado e as do gerenciamento da secretária
 import { Router } from 'express';
 import { ErroHttp } from '../erros.js';
 import {
   cancelarSolicitacao,
+  confirmarOuRecusarSolicitacao,
   listarChavesSolicitadas,
   listarSolicitacoesDoPaciente,
+  listarSolicitacoesGerenciamento,
   solicitarAgendamento,
 } from '../services/solicitacoes.js';
-import type { ChaveHorario } from '@shared/agenda';
+import { texto } from '../validacoes.js';
+import type { ChaveHorario, DecisaoSolicitacao, StatusSolicitacao } from '@shared/agenda';
 
 const router = Router();
 
@@ -35,6 +38,34 @@ function lerChaveHorario(corpo: unknown): ChaveHorario {
   return { Médico: { Código: codigoMedico as number }, Data, HoraInicio };
 }
 
+const STATUS_VALIDOS: StatusSolicitacao[] = ['Pendente', 'Confirmada', 'Recusada'];
+
+// Código da solicitação que vem na URL (/:codigo)
+function lerCodigo(valor: string): number {
+  const codigo = Number(valor);
+  if (!Number.isInteger(codigo)) {
+    throw new ErroHttp(400, 'Código da solicitação inválido.');
+  }
+  return codigo;
+}
+
+// Confere a decisão da secretária: confirmar, ou recusar com justificativa
+function lerDecisao(corpo: unknown): DecisaoSolicitacao {
+  const { Status, Justificativa } = (corpo ?? {}) as Record<string, unknown>;
+
+  if (Status === 'Confirmada') {
+    return { Status };
+  }
+  if (Status === 'Recusada') {
+    const justificativa = texto(Justificativa);
+    if (justificativa === '') {
+      throw new ErroHttp(400, 'Informe a justificativa da recusa.');
+    }
+    return { Status, Justificativa: justificativa };
+  }
+  throw new ErroHttp(400, 'Informe o Status (Confirmada ou Recusada).');
+}
+
 // GET /solicitacoes: solicitações do paciente, com Médico, Clinica e HoraFim
 router.get('/solicitacoes', async (_req, res) => {
   res.json(await listarSolicitacoesDoPaciente());
@@ -54,12 +85,29 @@ router.post('/solicitacoes', async (req, res) => {
 
 // DELETE /solicitacoes/:codigo: cancela uma solicitação pendente
 router.delete('/solicitacoes/:codigo', async (req, res) => {
-  const codigo = Number(req.params.codigo);
-  if (!Number.isInteger(codigo)) {
-    throw new ErroHttp(400, 'Código da solicitação inválido.');
-  }
-  await cancelarSolicitacao(codigo);
+  await cancelarSolicitacao(lerCodigo(req.params.codigo));
   res.status(204).end();
+});
+
+// GET /gerenciamento/solicitacoes?Status=Pendente
+// Solicitações de todos os pacientes para a secretária. Sem Status, devolve todas
+router.get('/gerenciamento/solicitacoes', async (req, res) => {
+  const { Status } = req.query;
+  if (Status === undefined || Status === '') {
+    res.json(await listarSolicitacoesGerenciamento());
+    return;
+  }
+  if (!STATUS_VALIDOS.includes(Status as StatusSolicitacao)) {
+    throw new ErroHttp(400, 'Status inválido. Use Pendente, Confirmada ou Recusada.');
+  }
+  res.json(await listarSolicitacoesGerenciamento(Status as StatusSolicitacao));
+});
+
+// PATCH /gerenciamento/solicitacoes/:codigo: a secretária confirma ou recusa uma solicitação pendente
+// Corpo: { "Status": "Confirmada" } ou { "Status": "Recusada", "Justificativa": "..." }
+router.patch('/gerenciamento/solicitacoes/:codigo', async (req, res) => {
+  const codigo = lerCodigo(req.params.codigo);
+  res.json(await confirmarOuRecusarSolicitacao(codigo, lerDecisao(req.body)));
 });
 
 export default router;
