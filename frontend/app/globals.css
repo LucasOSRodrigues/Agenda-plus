@@ -638,3 +638,66 @@ a.atalho:hover {
   color: #004e5b;
   font-weight: 600;
 }
+
+/* Tela de gerenciamento de solicitações (/gerenciamento/solicitacoes) */
+
+.filtro-solicitacoes {
+  max-width: 240px;
+  margin-bottom: 0;
+}
+
+.formulario-recusa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.formulario-recusa textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bdccc4;
+  border-radius: 8px;
+  background: #fff;
+  color: #206162;
+  font: inherit;
+  resize: vertical;
+}
+
+.formulario-recusa textarea:focus-visible {
+  outline: 3px solid #0097b2;
+  outline-offset: 3px;
+}
+
+.formulario-recusa-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.formulario-recusa-acoes .botao-secundario {
+  margin-top: 0;
+}
+
+.botao-recusar {
+  width: auto;
+  min-height: 40px;
+  margin-top: 0;
+  padding: 8px 16px;
+  background: #8a2525;
+}
+
+.botao-recusar:hover {
+  background: #6b1c1c;
+}
+
+.botao-recusar:disabled {
+  background: #9fb3ab;
+  cursor: wait;
+}
+
+@media (max-width: 640px) {
+  .filtro-solicitacoes {
+    max-width: none;
+  }
+}

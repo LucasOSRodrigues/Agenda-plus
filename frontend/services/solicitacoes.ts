@@ -1,8 +1,16 @@
-// Serviço de solicitações de agendamento usado pelas telas /horarios e /solicitacoes
+// Serviço de solicitações de agendamento usado pelas telas /horarios, /solicitacoes
+// e /gerenciamento/solicitacoes
 // Os dados vêm da API do backend (caminhos em services/rotas.ts)
 // Em caso de erro, a API responde { erro: "mensagem" }, que é mostrada na tela
 
-import type { ChaveHorario, Solicitacao, SolicitacaoDetalhada } from '@shared/agenda';
+import type {
+  ChaveHorario,
+  DecisaoSolicitacao,
+  Solicitacao,
+  SolicitacaoDetalhada,
+  SolicitacaoGerenciamento,
+  StatusSolicitacao,
+} from '@shared/agenda';
 import { ROTAS } from './rotas';
 
 // Solicitações do paciente, da consulta mais próxima para a mais distante
@@ -41,4 +49,29 @@ export async function solicitarAgendamento(horario: ChaveHorario): Promise<Solic
 export async function cancelarSolicitacao(codigo: number): Promise<void> {
   const resposta = await fetch(ROTAS.solicitacao(codigo), { method: 'DELETE' });
   if (!resposta.ok) throw new Error((await resposta.json()).erro);
+}
+
+// Solicitações de todos os pacientes, para o gerenciamento da secretária (H08)
+// Sem status, a API devolve todas
+export async function listarSolicitacoesGerenciamento(
+  status?: StatusSolicitacao,
+): Promise<SolicitacaoGerenciamento[]> {
+  const query = status ? `?${new URLSearchParams({ Status: status })}` : '';
+  const resposta = await fetch(`${ROTAS.solicitacoesGerenciamento}${query}`);
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
+}
+
+// A secretária confirma ou recusa (com justificativa) uma solicitação pendente
+export async function confirmarOuRecusarSolicitacao(
+  codigo: number,
+  decisao: DecisaoSolicitacao,
+): Promise<SolicitacaoGerenciamento> {
+  const resposta = await fetch(ROTAS.solicitacaoGerenciamento(codigo), {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(decisao),
+  });
+  if (!resposta.ok) throw new Error((await resposta.json()).erro);
+  return resposta.json();
 }
