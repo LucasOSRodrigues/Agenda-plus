@@ -15,4 +15,6 @@ export const ROTAS = {
   solicitacoes: `${API_URL}/solicitacoes`,
   chavesSolicitadas: `${API_URL}/solicitacoes/chaves`,
   solicitacao: (codigo: number) => `${API_URL}/solicitacoes/${codigo}`,
+  solicitacoesGerenciamento: `${API_URL}/gerenciamento/solicitacoes`,
+  solicitacaoGerenciamento: (codigo: number) => `${API_URL}/gerenciamento/solicitacoes/${codigo}`,
 };
