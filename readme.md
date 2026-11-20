@@ -84,6 +84,8 @@ Por enquanto a API usa dados fictícios em memória (`backend/src/mocks/banco.ts
 | GET | `/solicitacoes/chaves` | Chaves (`Médico-Data-HoraInicio`) dos horários já solicitados |
 | POST | `/solicitacoes` | Cria uma solicitação. Corpo: `{ "Médico": { "Código": 1 }, "Data": "AAAA-MM-DD", "HoraInicio": "HH:MM" }` |
 | DELETE | `/solicitacoes/:codigo` | Cancela uma solicitação pendente |
+| GET | `/gerenciamento/solicitacoes?Status=` | Solicitações de todos os pacientes para a secretária, com o nome do paciente (H08). `Status` opcional: `Pendente`, `Confirmada` ou `Recusada` |
+| PATCH | `/gerenciamento/solicitacoes/:codigo` | A secretária confirma ou recusa uma solicitação pendente (H08). Corpo: `{ "Status": "Confirmada" }` ou `{ "Status": "Recusada", "Justificativa": "..." }`. Confirmar reserva o horário e recusa as outras solicitações pendentes dele. Responde 400 (recusa sem justificativa), 404 ou 409 (já decidida, horário bloqueado, reservado ou que já passou). Provisório: ainda sem login, qualquer pessoa pode chamar; deve ficar restrita à secretária |
 
 Os erros voltam no formato `{ "erro": "mensagem" }`, com status 400 (dados inválidos), 404 (não encontrado) ou 409 (regra de negócio, ex.: horário indisponível).
 
@@ -101,6 +103,8 @@ npm run dev
 O site fica disponível em `http://localhost:3000`. A variável `NEXT_PUBLIC_API_URL` do `.env` indica onde está a API (padrão `http://localhost:3001`). Se mudar a porta do back-end, atualize essa variável e o `FRONTEND_URL` do back-end.
 
 A tela de cadastro da equipe fica em `http://localhost:3000/administracao/equipe` (por enquanto sem link nem proteção, até existir o login).
+
+A tela em que a secretária confirma ou recusa as solicitações fica em `http://localhost:3000/gerenciamento/solicitacoes`, com link a partir do gerenciamento de horários (também sem proteção até existir o login).
 
 As chamadas à API ficam em `frontend/services/`, e os caminhos ficam em `frontend/services/rotas.ts`. As páginas só usam as funções dos services.
 
