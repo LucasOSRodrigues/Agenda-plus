@@ -2,7 +2,7 @@
 // Os pacientes ficam só em memória: reiniciar o servidor apaga os cadastros.
 // Quando o banco existir, basta trocar o corpo desta função e manter a assinatura.
 
-import { PACIENTE_LOGADO } from '../mocks/banco.js';
+import { pacientes as pacientesFicticios } from '../mocks/banco.js';
 import { ErroHttp } from '../erros.js';
 import { gerarHashSenha } from '../senhas.js';
 import type { DadosCadastroPaciente, Paciente } from '@shared/agenda';
@@ -11,8 +11,8 @@ import type { DadosCadastroPaciente, Paciente } from '@shared/agenda';
 type PacienteArmazenado = Paciente & { SenhaHash: string };
 
 let pacientes: PacienteArmazenado[] = [];
-// O 100 já é usado pelo paciente fictício dos mocks, então os novos começam depois dele
-let proximoCodigo = PACIENTE_LOGADO.Código + 1;
+// Os códigos dos pacientes fictícios dos mocks já estão em uso, então os novos começam depois deles
+let proximoCodigo = Math.max(0, ...pacientesFicticios.map((p) => p.Código)) + 1;
 
 // Usadas pelo cadastro da equipe (H14), para CPF e e-mail não se repetirem entre usuários
 export function existePacienteComCpf(cpf: string): boolean {
