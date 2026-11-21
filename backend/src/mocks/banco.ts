@@ -29,7 +29,7 @@ export const clinicas: Clinica[] = [
       Bairro: 'Centro',
       Cidade: 'Ouro Preto',
     },
-    'E-mail': ['contato@clinicacentro.example.com'],
+    'E-mail': ['contato.clinicacentro@gmail.com'],
   },
   {
     CNPJ: '44555666000172',
@@ -41,8 +41,8 @@ export const clinicas: Clinica[] = [
       Cidade: 'Ouro Preto',
     },
     'E-mail': [
-      'contato@clinicabauxita.example.com',
-      'recepcao@clinicabauxita.example.com',
+      'contato1.clinicabauxita@gmail.com',
+      'contato2.clinicabauxita@gmail.com',
     ],
   },
 ];
