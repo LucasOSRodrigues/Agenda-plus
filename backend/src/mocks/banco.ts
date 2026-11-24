@@ -5,6 +5,7 @@ import type {
   Clinica,
   Horario,
   Medico,
+  Paciente,
   Solicitacao,
   StatusHorario,
   StatusSolicitacao,
@@ -112,6 +113,27 @@ export const STATUS_SOLICITACAO = {
 // Provisório: ainda não há autenticação, então o paciente logado é sempre este
 export const PACIENTE_LOGADO = { Código: 100 };
 
+// Paciente (subclasse de Usuário): o paciente logado e outro paciente fictício,
+// para a secretária ver solicitações de mais de uma pessoa (H08)
+export const pacientes: Paciente[] = [
+  {
+    Código: 100,
+    Nome: 'Mariana Alves',
+    CPF: '52998224725',
+    'E-mail': 'mariana.alves@example.com',
+    Telefone: '31988887777',
+    DataNascimento: '1994-03-12',
+  },
+  {
+    Código: 101,
+    Nome: 'João Pereira',
+    CPF: '12345678909',
+    'E-mail': 'joao.pereira@example.com',
+    Telefone: '31977776666',
+    DataNascimento: '1987-08-25',
+  },
+];
+
 // Momento X horas atrás, em formato ISO (para a data em que a solicitação foi feita)
 function horasAtras(horas: number): string {
   return new Date(Date.now() - horas * 60 * 60 * 1000).toISOString();
@@ -150,5 +172,27 @@ export const solicitacoes: Solicitacao[] = [
     DataSolicitacao: horasAtras(20),
     Status: STATUS_SOLICITACAO.RECUSADA,
     Justificativa: 'O médico precisou reorganizar a agenda deste dia. Escolha outro horário.',
+  },
+  // Mesmo horário da solicitação 2, pedido por outro paciente:
+  // ao confirmar uma delas, a outra é recusada automaticamente
+  {
+    Código: 4,
+    Paciente: { Código: 101 },
+    Médico: { Código: 1 },
+    Data: diasAPartirDeHoje(2),
+    HoraInicio: '14:00',
+    DataSolicitacao: horasAtras(5),
+    Status: STATUS_SOLICITACAO.PENDENTE,
+    Justificativa: '',
+  },
+  {
+    Código: 5,
+    Paciente: { Código: 101 },
+    Médico: { Código: 3 },
+    Data: diasAPartirDeHoje(2),
+    HoraInicio: '08:00',
+    DataSolicitacao: horasAtras(1),
+    Status: STATUS_SOLICITACAO.PENDENTE,
+    Justificativa: '',
   },
 ];

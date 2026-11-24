@@ -218,6 +218,9 @@ export default function GerenciamentoHorariosPage() {
           <Link href="/inicio" className="link-nav">
             Início
           </Link>
+          <Link href="/gerenciamento/solicitacoes" className="link-nav">
+            Solicitações
+          </Link>
         </nav>
 
         <section className="cadastro-horario" aria-labelledby="cadastro-horario-title">
