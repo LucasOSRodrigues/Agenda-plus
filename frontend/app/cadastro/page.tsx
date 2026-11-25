@@ -4,8 +4,8 @@
 // O paciente informa seus dados e cria uma senha para acessar o sistema (H02)
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Pagina from '../componentes/pagina';
 import { cadastrarPaciente } from '../../services/pacientes';
 
 type Aviso = { texto: string; sucesso: boolean };
@@ -76,16 +76,14 @@ export default function CadastroPage() {
   }
 
   return (
-    <main className="login-page">
-      <section className="login-card" aria-labelledby="cadastro-title">
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={38} height={38} />
-        </div>
-        <h1 id="cadastro-title">Crie sua conta</h1>
-        <p className="description">Informe seus dados para acessar os serviços da clínica.</p>
-
-        <form onSubmit={handleSubmit}>
+    <Pagina
+      area="acesso"
+      titulo="Crie sua conta"
+      descricao="Informe seus dados para acessar os serviços da clínica."
+    >
+      <section className="painel" aria-labelledby="cadastro-title">
+        <h2 id="cadastro-title" className="titulo-secao">Dados do paciente</h2>
+        <form className="formulario-cadastro" onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="nome">Nome completo</label>
             <input
@@ -202,6 +200,6 @@ export default function CadastroPage() {
           Já tem conta? <Link href="/">Entrar</Link>
         </p>
       </section>
-    </main>
+    </Pagina>
   );
 }

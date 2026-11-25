@@ -4,7 +4,7 @@
 // Painel que o paciente vê depois do login, com atalhos para as funções do sistema
 
 import Link from 'next/link';
-import Image from 'next/image';
+import Pagina from '../componentes/pagina';
 
 // Atalhos do portal do paciente (H03 a H06)
 // disponivel = false: a tela ainda não existe, então o card aparece desabilitado
@@ -31,21 +31,9 @@ const ATALHOS = [
 
 export default function InicioPage() {
   return (
-    <main className="inicio-page">
-      <section className="inicio-card" aria-labelledby="inicio-title">
-        <header className="inicio-topo">
-          <div className="brand">
-            <span className="brand-name">Agenda</span>
-            <Image src="/agenda-plus-transparent.png" alt="" width={28} height={28} />
-          </div>
-          <Link href="/" className="inicio-sair">
-            Sair
-          </Link>
-        </header>
-
-        <h1 id="inicio-title">Olá, bem-vindo!</h1>
-        <p className="description">O que você quer fazer hoje?</p>
-
+    <Pagina area="paciente" titulo="Olá, bem-vindo!" descricao="O que você quer fazer hoje?">
+      <section aria-labelledby="atalhos-title">
+        <h2 id="atalhos-title" className="titulo-secao">Serviços</h2>
         <ul className="atalhos">
           {ATALHOS.map((atalho) => (
             <li key={atalho.href}>
@@ -65,6 +53,6 @@ export default function InicioPage() {
           ))}
         </ul>
       </section>
-    </main>
+    </Pagina>
   );
 }

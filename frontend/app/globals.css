@@ -1,8 +1,10 @@
 :root {
   font-family: Arial, Helvetica, sans-serif;
-  color: #000000;
-  background: #16484b;
+  color: #1f2d2a;
+  background: #f4f8f7;
   color-scheme: light;
+  --largura-pagina: 1520px;
+  --margem-pagina: clamp(16px, 3vw, 48px);
 }
 
 * {
@@ -13,37 +15,74 @@ body {
   margin: 0;
 }
 
-.login-page {
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-}
+/* Largura e margens compartilhadas pelas telas */
 
-.login-card {
+.largura-pagina {
   width: 100%;
-  max-width: 420px;
-  padding: 40px 32px 24px;
-  border: 2px solid #dce6e0;
-  border-radius: 16px;
+  max-width: var(--largura-pagina);
+  margin-inline: auto;
+  padding-inline: var(--margem-pagina);
+}
+
+.gerenciamento-conteudo {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.gerenciamento-conteudo > * {
+  min-width: 0;
+}
+
+.painel {
+  min-width: 0;
+  padding: clamp(16px, 3vw, 28px);
+  border: 1px solid #dce6e0;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 0 12px 40px #203b3508;
+  box-shadow: 0 12px 24px #0b2a2c08;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 0 0 24px;
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -1px;
+.titulo-secao {
+  margin: 0 0 16px;
+  color: #16484b;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.3;
 }
 
-.brand img {
-  flex-shrink: 0;
+.formulario-cadastro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.formulario-cadastro .field {
+  margin-bottom: 0;
+}
+
+.formulario-cadastro > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  width: auto;
+  min-width: 180px;
+  padding-inline: 20px;
+}
+
+@media (max-width: 980px) {
+  .gerenciamento-conteudo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .formulario-cadastro {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .formulario-cadastro > button {
+    width: 100%;
+  }
 }
 
 h1 {
@@ -52,17 +91,11 @@ h1 {
   line-height: 1.3;
 }
 
-.description {
-  margin: 0 0 28px;
-  color: #596c65;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
 .field {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
   margin-bottom: 20px;
 }
 
@@ -73,6 +106,7 @@ label {
 
 input {
   width: 100%;
+  min-width: 0;
   min-height: 48px;
   padding: 12px 14px;
   border: 1px solid #bdccc4;
@@ -88,6 +122,7 @@ input::placeholder {
 
 button {
   width: 100%;
+  min-width: 0;
   min-height: 48px;
   margin-top: 4px;
   border: 0;
@@ -120,16 +155,9 @@ button:focus-visible {
   margin: 0;
 }
 
-@media (max-width: 420px) {
-  .login-card {
-    padding: 32px 24px 24px;
-  }
-}
-
-/* Tela de consulta de horários (/horarios) */
-
 select {
   width: 100%;
+  min-width: 0;
   min-height: 48px;
   padding: 12px 14px;
   border: 1px solid #bdccc4;
@@ -144,43 +172,9 @@ select:focus-visible {
   outline-offset: 3px;
 }
 
-.horarios-page {
-  min-height: 100svh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 32px 20px;
-}
-
-.horarios-card {
-  width: 100%;
-  max-width: 760px;
-  padding: 32px;
-  border: 2px solid #dce6e0;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 12px 40px #203b3508;
-}
-
-.horarios-card .brand {
-  justify-content: flex-start;
-  margin-bottom: 20px;
-  font-size: 1.75rem;
-}
-
-.filtros {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.filtros .field {
-  margin-bottom: 0;
-}
-
 .botao-secundario {
   width: auto;
-  min-height: 40px;
+  min-height: 44px;
   margin-top: 16px;
   padding: 8px 16px;
   border: 1px solid #0097b2;
@@ -201,45 +195,40 @@ select:focus-visible {
   line-height: 1.5;
 }
 
-.dia {
-  margin-top: 24px;
-}
-
-.dia h2 {
-  margin: 0 0 12px;
-  color: #206162;
-  font-size: 16px;
-}
+/* Listas de horários e solicitações */
 
 .lista-horarios {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .horario {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(112px, 0.85fr) minmax(0, 2.5fr) minmax(0, 180px);
   gap: 16px;
-  align-items: flex-start;
-  padding: 14px 16px;
+  align-items: start;
+  padding: 18px 20px;
   border: 1px solid #dce6e0;
   border-radius: 12px;
+  background: #fff;
+  overflow-wrap: anywhere;
 }
 
 .horario-hora {
-  min-width: 112px;
   color: #004e5b;
   font-weight: 700;
-  white-space: nowrap;
+  line-height: 1.4;
 }
 
 .horario-detalhes {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
   line-height: 1.4;
 }
 
@@ -248,67 +237,8 @@ select:focus-visible {
   font-size: 14px;
 }
 
-@media (max-width: 640px) {
-  .horarios-card {
-    padding: 24px 20px;
-  }
-
-  .filtros {
-    grid-template-columns: 1fr;
-  }
-
-  .horario {
-    flex-direction: column;
-    gap: 6px;
-  }
-}
-
 /* Tela inicial (/inicio) */
 
-.inicio-page {
-  min-height: 100svh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 32px 20px;
-}
-
-.inicio-card {
-  width: 100%;
-  max-width: 760px;
-  padding: 32px;
-  border: 2px solid #dce6e0;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 12px 40px #203b3508;
-}
-
-.inicio-topo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.inicio-topo .brand {
-  margin: 0;
-  font-size: 1.75rem;
-}
-
-.inicio-sair {
-  padding: 8px 16px;
-  border: 1px solid #0097b2;
-  border-radius: 8px;
-  color: #004e5b;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.inicio-sair:hover {
-  background: #e6f5f8;
-}
-
-.inicio-sair:focus-visible,
 .atalho:focus-visible {
   outline: 3px solid #0097b2;
   outline-offset: 3px;
@@ -316,7 +246,7 @@ select:focus-visible {
 
 .atalhos {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 16px;
   margin: 0;
   padding: 0;
@@ -334,6 +264,8 @@ select:focus-visible {
   color: inherit;
   line-height: 1.4;
   text-decoration: none;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .atalho strong {
@@ -348,6 +280,7 @@ select:focus-visible {
 a.atalho:hover {
   border-color: #0097b2;
   background: #e6f5f8;
+  box-shadow: 0 8px 22px #0b2a2c12;
 }
 
 .atalho-desabilitado {
@@ -362,72 +295,31 @@ a.atalho:hover {
   font-weight: 600;
 }
 
-@media (max-width: 640px) {
-  .inicio-card {
-    padding: 24px 20px;
-  }
-
-  .atalhos {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Solicitações de agendamento (/horarios e /solicitacoes) */
-
-/* Links de navegação entre as telas */
-
-.links-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 0 0 24px;
-}
-
-.link-nav {
-  padding: 8px 16px;
-  border: 1px solid #0097b2;
-  border-radius: 8px;
-  color: #004e5b;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.link-nav:hover {
-  background: #e6f5f8;
-}
-
-.link-nav:focus-visible {
-  outline: 3px solid #0097b2;
-  outline-offset: 3px;
-}
-
+/* Ações e avisos das solicitações */
 
 .horario-acao {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
-  margin-left: auto;
+  min-width: 0;
+}
+
+.horario .horario-acao button {
+  max-width: 100%;
+  white-space: normal;
 }
 
 .botao-solicitar {
   width: auto;
-  min-height: 40px;
+  min-height: 44px;
   margin-top: 0;
   padding: 8px 16px;
-  white-space: nowrap;
 }
 
 .botao-solicitar:disabled {
   background: #9fb3ab;
   cursor: wait;
-}
-
-.solicitado {
-  color: #206162;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
 }
 
 .aviso {
@@ -498,53 +390,24 @@ a.atalho:hover {
 }
 
 @media (max-width: 640px) {
+  .horario {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
   .horario-acao {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    margin-left: 0;
   }
 }
-
-/* Data e hora na lista de solicitações: a data é longa, então pode quebrar em duas linhas */
-
-.horario-hora-solicitacao {
-  flex-shrink: 0;
-  width: 168px;
-  white-space: normal;
-}
-
-@media (max-width: 640px) {
-  .horario-hora-solicitacao {
-    width: auto;
-  }
-}
-
-/* Botão de cancelar dentro da lista de solicitações */
 
 .horario-acao .botao-secundario {
   margin-top: 0;
 }
 
 /* Tela de gerenciamento de horários (/gerenciamento/horarios) */
-
-.gerenciamento-card {
-  max-width: 900px;
-}
-
-.cadastro-horario {
-  margin-bottom: 24px;
-  padding: 20px;
-  border: 1px solid #dce6e0;
-  border-radius: 12px;
-  background: #f8faf9;
-}
-
-.cadastro-horario h2 {
-  margin: 0 0 16px;
-  color: #206162;
-  font-size: 18px;
-}
 
 .formulario-horario {
   display: grid;
@@ -553,20 +416,21 @@ a.atalho:hover {
 }
 
 .formulario-horario .field {
+  grid-column: 1 / -1;
   margin-bottom: 0;
 }
 
+.formulario-horario .campo-hora {
+  grid-column: auto;
+}
+
 .cadastro-acoes {
-  display: flex;
-  justify-content: flex-end;
   grid-column: 1 / -1;
 }
 
 .botao-cadastrar {
-  width: auto;
-  min-width: 180px;
   margin-top: 0;
-  padding: 8px 20px;
+  padding: 8px 16px;
 }
 
 .botao-cadastrar:disabled {
@@ -574,10 +438,10 @@ a.atalho:hover {
   cursor: wait;
 }
 
-.horario-hora-gerenciamento {
-  flex-shrink: 0;
-  width: 168px;
-  white-space: normal;
+@media (max-width: 420px) {
+  .formulario-horario {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .status-liberado {
@@ -598,7 +462,6 @@ a.atalho:hover {
 .gerenciamento-sem-acao {
   color: #6d7c75;
   font-size: 13px;
-  white-space: nowrap;
 }
 
 .horario-acao .botao-secundario:disabled {
@@ -608,28 +471,7 @@ a.atalho:hover {
   cursor: wait;
 }
 
-@media (max-width: 640px) {
-  .formulario-horario {
-    grid-template-columns: 1fr;
-  }
-
-  .cadastro-acoes {
-    grid-column: auto;
-  }
-
-  .botao-cadastrar {
-    width: 100%;
-  }
-
-  .horario-hora-gerenciamento {
-    width: auto;
-  }
-}
-
-
-/* Tela de cadastro do paciente (/cadastro) e link na tela de login */
-
-.login-card button:disabled {
+.formulario-cadastro button:disabled {
   background: #9fb3ab;
   cursor: wait;
 }
@@ -642,7 +484,6 @@ a.atalho:hover {
 /* Tela de gerenciamento de solicitações (/gerenciamento/solicitacoes) */
 
 .filtro-solicitacoes {
-  max-width: 240px;
   margin-bottom: 0;
 }
 
@@ -655,6 +496,7 @@ a.atalho:hover {
 
 .formulario-recusa textarea {
   width: 100%;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid #bdccc4;
   border-radius: 8px;
@@ -681,7 +523,7 @@ a.atalho:hover {
 
 .botao-recusar {
   width: auto;
-  min-height: 40px;
+  min-height: 44px;
   margin-top: 0;
   padding: 8px 16px;
   background: #8a2525;
@@ -694,10 +536,4 @@ a.atalho:hover {
 .botao-recusar:disabled {
   background: #9fb3ab;
   cursor: wait;
-}
-
-@media (max-width: 640px) {
-  .filtro-solicitacoes {
-    max-width: none;
-  }
 }

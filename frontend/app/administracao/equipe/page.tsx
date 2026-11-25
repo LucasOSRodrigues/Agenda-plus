@@ -7,8 +7,7 @@
 // Quando a autenticação existir, ela deve ser liberada só para o administrador.
 
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Pagina from '../../componentes/pagina';
 import { cadastrarMembroEquipe } from '../../../services/equipe';
 import { listarEspecialidades } from '../../../services/horarios';
 import type { DadosCadastroEquipe, PapelEquipe } from '@shared/agenda';
@@ -124,18 +123,14 @@ export default function CadastroEquipePage() {
   }
 
   return (
-    <main className="login-page">
-      <section className="login-card" aria-labelledby="equipe-title">
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={38} height={38} />
-        </div>
-        <h1 id="equipe-title">Cadastrar equipe</h1>
-        <p className="description">
-          Cadastre médicos e secretários para que a equipe acesse o sistema.
-        </p>
-
-        <form onSubmit={handleSubmit}>
+    <Pagina
+      area="administracao"
+      titulo="Cadastrar equipe"
+      descricao="Cadastre médicos e secretários para que a equipe acesse o sistema."
+    >
+      <section className="painel" aria-labelledby="equipe-title">
+        <h2 id="equipe-title" className="titulo-secao">Dados do membro da equipe</h2>
+        <form className="formulario-cadastro" onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="papel">Papel</label>
             <select id="papel" value={formulario.Papel} onChange={atualizar('Papel')} required>
@@ -292,11 +287,7 @@ export default function CadastroEquipePage() {
             {aviso.texto}
           </p>
         )}
-
-        <p className="form-message">
-          <Link href="/inicio">Voltar ao início</Link>
-        </p>
       </section>
-    </main>
+    </Pagina>
   );
 }
