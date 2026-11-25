@@ -5,8 +5,7 @@
 // Recusar exige uma justificativa, que aparece para o paciente em /solicitacoes
 
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Pagina from '../../componentes/pagina';
 import {
   confirmarOuRecusarSolicitacao,
   listarSolicitacoesGerenciamento,
@@ -128,7 +127,7 @@ export default function GerenciamentoSolicitacoesPage() {
     decidir(solicitacao, { Status: 'Recusada', Justificativa: justificativa.trim() });
   }
 
-  // Mensagem que aparece logo abaixo do filtro
+  // Mensagem que aparece no início da lista
   let mensagem = '';
   if (carregando) {
     mensagem = 'Carregando solicitações...';
@@ -141,31 +140,16 @@ export default function GerenciamentoSolicitacoesPage() {
   }
 
   return (
-    <main className="horarios-page">
-      <section
-        className="horarios-card gerenciamento-card"
-        aria-labelledby="gerenciamento-solicitacoes-title"
-      >
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={28} height={28} />
-        </div>
-        <h1 id="gerenciamento-solicitacoes-title">Solicitações de consulta</h1>
-        <p className="description">
-          Confirme ou recuse os pedidos de consulta dos pacientes.
-        </p>
-
-        <nav className="links-nav" aria-label="Navegação">
-          <Link href="/inicio" className="link-nav">
-            Início
-          </Link>
-          <Link href="/gerenciamento/horarios" className="link-nav">
-            Horários
-          </Link>
-        </nav>
-
+    <Pagina
+      area="secretaria"
+      titulo="Solicitações de consulta"
+      descricao="Confirme ou recuse os pedidos de consulta dos pacientes."
+      className="gerenciamento-conteudo"
+    >
+      <section className="painel" aria-labelledby="filtro-title">
+        <h2 id="filtro-title" className="titulo-secao">Filtros</h2>
         <div className="field filtro-solicitacoes">
-          <label htmlFor="filtro-status">Mostrar</label>
+          <label htmlFor="filtro-status">Status da solicitação</label>
           <select id="filtro-status" value={filtro} onChange={alterarFiltro}>
             {OPCOES_FILTRO.map((opcao) => (
               <option key={opcao.texto} value={opcao.valor}>
@@ -174,7 +158,10 @@ export default function GerenciamentoSolicitacoesPage() {
             ))}
           </select>
         </div>
+      </section>
 
+      <section aria-labelledby="gerenciamento-solicitacoes-title">
+        <h2 id="gerenciamento-solicitacoes-title" className="titulo-secao">Pedidos de consulta</h2>
         <p className="form-message" role="status">
           {mensagem}
         </p>
@@ -193,14 +180,14 @@ export default function GerenciamentoSolicitacoesPage() {
         )}
 
         {!carregando && solicitacoes.length > 0 && (
-          <ul className="lista-horarios" style={{ marginTop: 16 }}>
+          <ul className="lista-horarios">
             {solicitacoes.map((solicitacao) => {
               const estaEnviando = enviando === solicitacao.Código;
               const idJustificativa = `justificativa-${solicitacao.Código}`;
 
               return (
                 <li className="horario" key={solicitacao.Código}>
-                  <span className="horario-hora horario-hora-gerenciamento">
+                  <span className="horario-hora">
                     {formatarData(solicitacao.Data)}
                     <br />
                     {solicitacao.HoraInicio} – {solicitacao.HoraFim}
@@ -288,6 +275,6 @@ export default function GerenciamentoSolicitacoesPage() {
           </ul>
         )}
       </section>
-    </main>
+    </Pagina>
   );
 }

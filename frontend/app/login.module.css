@@ -1,0 +1,38 @@
+/* Tela de login (/) */
+
+.pagina {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 32px 20px;
+  background: #16484b;
+}
+
+.pagina .cartao {
+  width: 100%;
+  max-width: 420px;
+  padding: clamp(24px, 6vw, 36px);
+  border-radius: 16px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  font-size: clamp(1.9rem, 8vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.descricao {
+  margin: 0 0 24px;
+  color: #596c65;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.cadastro {
+  text-align: center;
+}

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
+import estilos from './login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,16 +16,16 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="login-page">
-      <section className="login-card" aria-labelledby="login-title">
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={38} height={38}/>
+    <main className={estilos.pagina}>
+      <section className={`painel ${estilos.cartao}`} aria-labelledby="login-title">
+        <div className={estilos.marca}>
+          <span>Agenda</span>
+          <Image src="/agenda-plus-transparent.png" alt="" width={38} height={38} />
         </div>
         <h1 id="login-title">Entre na sua conta</h1>
-        <p className="description">Bem-vindo! Acesse o sistema para continuar.</p>
+        <p className={estilos.descricao}>Informe seu CPF e sua senha para acessar o Agenda+.</p>
 
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} aria-label="Login" noValidate>
           <div className="field">
             <label htmlFor="cpf">CPF</label>
             <input
@@ -55,7 +56,7 @@ export default function LoginPage() {
 
           <button type="submit">Entrar</button>
         </form>
-                <p className="form-message">
+        <p className={`form-message ${estilos.cadastro}`}>
           Ainda não tem conta? <Link href="/cadastro">Cadastre-se</Link>
         </p>
       </section>

@@ -1,6 +1,5 @@
 /* Tela de consulta de horários (/horarios)
-   Os estilos desta tela não afetam as outras telas.
-   Os campos do formulário continuam vindo do globals.css. */
+   O cabeçalho é compartilhado e os campos vêm do globals.css. */
 
 /* Base da página */
 
@@ -13,28 +12,12 @@
 /* Centralização de conteúdo dentro de cada seção */
 .container {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--largura-pagina);
   margin: 0 auto;
-  padding: 0 24px;
+  padding-inline: var(--margem-pagina);
 }
 
-/* Cabeçalho com logo, menu e botão de destaque */
-
-.cabecalho {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: #fff;
-  box-shadow: 0 2px 16px #0b2a2c1f;
-}
-
-.cabecalhoConteudo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  min-height: 84px;
-}
+/* Logo do rodapé */
 
 .logo {
   display: flex;
@@ -47,79 +30,6 @@
   text-decoration: none;
 }
 
-.menu {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.menuLink {
-  position: relative;
-  padding: 10px 14px;
-  color: #004e5b;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.menuLink:hover {
-  color: #0097b2;
-}
-
-/* Sublinhado na cor da marca */
-.menuLinkAtivo::after {
-  content: '';
-  position: absolute;
-  right: 14px;
-  bottom: 2px;
-  left: 14px;
-  height: 3px;
-  border-radius: 2px;
-  background: #0097b2;
-}
-
-.botaoDestaque {
-  margin-left: 8px;
-  padding: 14px 22px;
-  border-radius: 6px;
-  background: #0097b2;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.botaoDestaque:hover {
-  background: #004e5b;
-}
-
-.logo:focus-visible,
-.menuLink:focus-visible,
-.botaoDestaque:focus-visible {
-  outline: 3px solid #0097b2;
-  outline-offset: 3px;
-}
-
-/* Botão de abrir o menu */
-.botaoMenu {
-  display: none;
-  width: auto;
-  min-height: 40px;
-  margin: 0;
-  padding: 8px 16px;
-  border: 1px solid #0097b2;
-  background: #fff;
-  color: #004e5b;
-}
-
-.botaoMenu:hover {
-  background: #e6f5f8;
-}
-
 /* Faixa de abertura */
 
 .abertura {
@@ -128,18 +38,6 @@
   padding: 72px 0 120px;
   background: linear-gradient(115deg, #16484b 0%, #0b6b78 55%, #0097b2 100%);
   color: #fff;
-}
-
-/* Logo do site */
-.aberturaEnfeite {
-  position: absolute;
-  top: 50%;
-  right: 6%;
-  width: 320px;
-  height: 320px;
-  opacity: 0.12;
-  transform: translateY(-50%);
-  pointer-events: none;
 }
 
 .aberturaRotulo {
@@ -339,6 +237,7 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  overflow-wrap: anywhere;
   line-height: 1.4;
 }
 
@@ -448,7 +347,7 @@
 
 .listaUnidades {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 24px;
   margin: 0;
   padding: 0;
@@ -530,11 +429,6 @@
     font-size: 40px;
   }
 
-  .aberturaEnfeite {
-    width: 240px;
-    height: 240px;
-  }
-
   .buscaPainel {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -585,49 +479,6 @@
 
 /* Telas pequenas */
 @media (max-width: 760px) {
-  .container {
-    padding: 0 16px;
-  }
-
-  .cabecalhoConteudo {
-    flex-wrap: wrap;
-    min-height: 68px;
-    gap: 12px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-
-  .logo {
-    font-size: 1.6rem;
-  }
-
-  .botaoMenu {
-    display: block;
-  }
-
-  /* Menu escondido até tocar em "Menu" */
-  .menu {
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    padding-bottom: 12px;
-  }
-
-  .menuAberto {
-    display: flex;
-  }
-
-  .menuLinkAtivo::after {
-    right: auto;
-    width: 40px;
-  }
-
-  .botaoDestaque {
-    margin: 4px 0 0;
-    text-align: center;
-  }
-
   .abertura {
     padding: 40px 0 96px;
   }
@@ -638,10 +489,6 @@
 
   .aberturaTexto {
     font-size: 16px;
-  }
-
-  .aberturaEnfeite {
-    display: none;
   }
 
   .destaques {

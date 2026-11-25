@@ -5,8 +5,8 @@
 // O paciente pode cancelar as solicitações que ainda estão pendentes (H04)
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Pagina from '../componentes/pagina';
 import { cancelarSolicitacao, listarSolicitacoesDoPaciente } from '../../services/solicitacoes';
 import type { SolicitacaoDetalhada, StatusSolicitacao } from '@shared/agenda';
 
@@ -78,26 +78,13 @@ export default function MinhasSolicitacoesPage() {
   }
 
   return (
-    <main className="horarios-page">
-      <section className="horarios-card" aria-labelledby="solicitacoes-title">
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={28} height={28} />
-        </div>
-        <h1 id="solicitacoes-title">Minhas solicitações</h1>
-        <p className="description">
-          Acompanhe se suas consultas estão pendentes, confirmadas ou recusadas.
-        </p>
-
-        <nav className="links-nav" aria-label="Navegação">
-          <Link href="/inicio" className="link-nav">
-            Início
-          </Link>
-          <Link href="/horarios" className="link-nav">
-            Horários disponíveis
-          </Link>
-        </nav>
-
+    <Pagina
+      area="paciente"
+      titulo="Minhas solicitações"
+      descricao="Acompanhe se suas consultas estão pendentes, confirmadas ou recusadas."
+    >
+      <section aria-labelledby="solicitacoes-title">
+        <h2 id="solicitacoes-title" className="titulo-secao">Consultas solicitadas</h2>
         <p className="form-message" role="status">
           {mensagem}
         </p>
@@ -116,10 +103,10 @@ export default function MinhasSolicitacoesPage() {
         )}
 
         {!carregando && solicitacoes.length > 0 && (
-          <ul className="lista-horarios" style={{ marginTop: 16 }}>
+          <ul className="lista-horarios">
             {solicitacoes.map((solicitacao) => (
               <li className="horario" key={solicitacao.Código}>
-                <span className="horario-hora horario-hora-solicitacao">
+                <span className="horario-hora">
                   {formatarData(solicitacao.Data)}
                   <br />
                   {solicitacao.HoraInicio} – {solicitacao.HoraFim}
@@ -168,6 +155,6 @@ export default function MinhasSolicitacoesPage() {
           </ul>
         )}
       </section>
-    </main>
+    </Pagina>
   );
 }

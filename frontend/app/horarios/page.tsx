@@ -15,6 +15,8 @@ import {
 } from '../../services/horarios';
 import { listarChavesSolicitadas, solicitarAgendamento } from '../../services/solicitacoes';
 import type { ChaveHorario, Clinica, HorarioDetalhado } from '@shared/agenda';
+import Cabecalho from '../componentes/cabecalho';
+import MarcaAbertura from '../componentes/marca-abertura';
 import estilos from './horarios.module.css';
 
 type Filtros = { CNPJ: string; Especialidade: string; Data: string };
@@ -88,8 +90,6 @@ export default function ConsultaHorariosPage() {
   const [enviando, setEnviando] = useState('');
   // Resultado da última solicitação: { texto, sucesso }
   const [aviso, setAviso] = useState<Aviso | null>(null);
-  // Menu aberto ou fechado nas telas pequenas
-  const [menuAberto, setMenuAberto] = useState(false);
 
   // Quando a tela abre, carrega a data de hoje e as opções dos filtros
   useEffect(() => {
@@ -178,60 +178,12 @@ export default function ConsultaHorariosPage() {
 
   return (
     <div className={estilos.pagina}>
-      {/* Cabeçalho: logo, menu e botão de destaque */}
-      <header className={estilos.cabecalho}>
-        <div className={`${estilos.container} ${estilos.cabecalhoConteudo}`}>
-          <Link href="/inicio" className={estilos.logo} aria-label="Agenda+, ir para o início">
-            <span>Agenda</span>
-            <Image src="/agenda-plus-transparent.png" alt="" width={34} height={34} />
-          </Link>
-
-          {/* Só aparece em telas pequenas */}
-          <button
-            type="button"
-            className={estilos.botaoMenu}
-            aria-expanded={menuAberto}
-            aria-controls="menu-principal"
-            onClick={() => setMenuAberto((aberto) => !aberto)}
-          >
-            {menuAberto ? 'Fechar' : 'Menu'}
-          </button>
-
-          <nav
-            id="menu-principal"
-            className={`${estilos.menu} ${menuAberto ? estilos.menuAberto : ''}`}
-            aria-label="Navegação"
-          >
-            <Link href="/inicio" className={estilos.menuLink}>
-              Início
-            </Link>
-            <Link
-              href="/horarios"
-              className={`${estilos.menuLink} ${estilos.menuLinkAtivo}`}
-              aria-current="page"
-            >
-              Horários
-            </Link>
-            <Link href="/solicitacoes" className={estilos.botaoDestaque}>
-              Minhas solicitações
-            </Link>
-            <Link href="/" className={estilos.menuLink}>
-              Sair
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Cabecalho area="paciente" />
 
       <main>
         {/* Faixa de abertura */}
         <section className={estilos.abertura}>
-          <Image
-            src="/agenda-plus-transparent.png"
-            alt=""
-            width={320}
-            height={320}
-            className={estilos.aberturaEnfeite}
-          />
+          <MarcaAbertura />
           <div className={estilos.container}>
             <p className={estilos.aberturaRotulo}>Portal do Paciente</p>
             <h1>Horários disponíveis</h1>

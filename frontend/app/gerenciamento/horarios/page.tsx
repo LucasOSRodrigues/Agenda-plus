@@ -4,8 +4,7 @@
 // Mostra todos os horários e permite que a secretária libere ou bloqueie cada um (H09)
 
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Pagina from '../../componentes/pagina';
 import {
   alterarStatusHorario,
   cadastrarHorario,
@@ -186,7 +185,7 @@ export default function GerenciamentoHorariosPage() {
     }
   }
 
-  // Mensagem que aparece logo abaixo da navegação
+  // Mensagem que aparece no início da lista
   let mensagem = '';
   if (carregando) {
     mensagem = 'Carregando horários...';
@@ -199,113 +198,98 @@ export default function GerenciamentoHorariosPage() {
   }
 
   return (
-    <main className="horarios-page">
-      <section
-        className="horarios-card gerenciamento-card"
-        aria-labelledby="gerenciamento-horarios-title"
-      >
-        <div className="brand">
-          <span className="brand-name">Agenda</span>
-          <Image src="/agenda-plus-transparent.png" alt="" width={28} height={28} />
-        </div>
-        <h1 id="gerenciamento-horarios-title">Gerenciamento de horários</h1>
-        <p className="description">
-          Consulte os horários cadastrados e controle quais estão disponíveis para os
-          pacientes.
-        </p>
+    <Pagina
+      area="secretaria"
+      titulo="Gerenciamento de horários"
+      descricao="Consulte os horários cadastrados e controle quais estão disponíveis para os pacientes."
+      className="gerenciamento-conteudo"
+    >
+      <section className="painel" aria-labelledby="cadastro-horario-title">
+        <h2 id="cadastro-horario-title" className="titulo-secao">Cadastrar horário</h2>
+        <form className="formulario-horario" onSubmit={cadastrar} noValidate>
+          <div className="field">
+            <label htmlFor="cadastro-medico">Médico</label>
+            <select
+              id="cadastro-medico"
+              name="CodigoMedico"
+              value={formulario.CodigoMedico}
+              onChange={alterarCampo}
+              required
+            >
+              <option value="">Selecione</option>
+              {medicos.map((medico) => (
+                <option key={medico.Código} value={medico.Código}>
+                  {medico.Nome} — {medico.Especialidade}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <nav className="links-nav" aria-label="Navegação">
-          <Link href="/inicio" className="link-nav">
-            Início
-          </Link>
-          <Link href="/gerenciamento/solicitacoes" className="link-nav">
-            Solicitações
-          </Link>
-        </nav>
+          <div className="field">
+            <label htmlFor="cadastro-clinica">Clínica</label>
+            <select
+              id="cadastro-clinica"
+              name="CNPJ"
+              value={formulario.CNPJ}
+              onChange={alterarCampo}
+              required
+            >
+              <option value="">Selecione</option>
+              {clinicas.map((clinica) => (
+                <option key={clinica.CNPJ} value={clinica.CNPJ}>
+                  {clinica.Nome}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <section className="cadastro-horario" aria-labelledby="cadastro-horario-title">
-          <h2 id="cadastro-horario-title">Cadastrar horário</h2>
-          <form className="formulario-horario" onSubmit={cadastrar} noValidate>
-            <div className="field">
-              <label htmlFor="cadastro-medico">Médico</label>
-              <select
-                id="cadastro-medico"
-                name="CodigoMedico"
-                value={formulario.CodigoMedico}
-                onChange={alterarCampo}
-                required
-              >
-                <option value="">Selecione</option>
-                {medicos.map((medico) => (
-                  <option key={medico.Código} value={medico.Código}>
-                    {medico.Nome} — {medico.Especialidade}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="field">
+            <label htmlFor="cadastro-data">Data</label>
+            <input
+              id="cadastro-data"
+              name="Data"
+              type="date"
+              min={hoje || undefined}
+              value={formulario.Data}
+              onChange={alterarCampo}
+              required
+            />
+          </div>
 
-            <div className="field">
-              <label htmlFor="cadastro-clinica">Clínica</label>
-              <select
-                id="cadastro-clinica"
-                name="CNPJ"
-                value={formulario.CNPJ}
-                onChange={alterarCampo}
-                required
-              >
-                <option value="">Selecione</option>
-                {clinicas.map((clinica) => (
-                  <option key={clinica.CNPJ} value={clinica.CNPJ}>
-                    {clinica.Nome}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="field campo-hora">
+            <label htmlFor="cadastro-hora-inicio">Hora inicial</label>
+            <input
+              id="cadastro-hora-inicio"
+              name="HoraInicio"
+              type="time"
+              value={formulario.HoraInicio}
+              onChange={alterarCampo}
+              required
+            />
+          </div>
 
-            <div className="field">
-              <label htmlFor="cadastro-data">Data</label>
-              <input
-                id="cadastro-data"
-                name="Data"
-                type="date"
-                min={hoje || undefined}
-                value={formulario.Data}
-                onChange={alterarCampo}
-                required
-              />
-            </div>
+          <div className="field campo-hora">
+            <label htmlFor="cadastro-hora-fim">Hora final</label>
+            <input
+              id="cadastro-hora-fim"
+              name="HoraFim"
+              type="time"
+              value={formulario.HoraFim}
+              onChange={alterarCampo}
+              required
+            />
+          </div>
 
-            <div className="field">
-              <label htmlFor="cadastro-hora-inicio">Hora inicial</label>
-              <input
-                id="cadastro-hora-inicio"
-                name="HoraInicio"
-                type="time"
-                value={formulario.HoraInicio}
-                onChange={alterarCampo}
-                required
-              />
-            </div>
+          <div className="cadastro-acoes">
+            <button type="submit" className="botao-cadastrar" disabled={cadastrando}>
+              {cadastrando ? 'Cadastrando...' : 'Cadastrar horário'}
+            </button>
+          </div>
+        </form>
+      </section>
 
-            <div className="field">
-              <label htmlFor="cadastro-hora-fim">Hora final</label>
-              <input
-                id="cadastro-hora-fim"
-                name="HoraFim"
-                type="time"
-                value={formulario.HoraFim}
-                onChange={alterarCampo}
-                required
-              />
-            </div>
-
-            <div className="cadastro-acoes">
-              <button type="submit" className="botao-cadastrar" disabled={cadastrando}>
-                {cadastrando ? 'Cadastrando...' : 'Cadastrar horário'}
-              </button>
-            </div>
-          </form>
-        </section>
+      <section aria-labelledby="gerenciamento-horarios-title">
+        <h2 id="gerenciamento-horarios-title" className="titulo-secao">Horários cadastrados</h2>
 
         <p className="form-message" role="status">
           {mensagem}
@@ -322,7 +306,7 @@ export default function GerenciamentoHorariosPage() {
         )}
 
         {!carregando && horarios.length > 0 && (
-          <ul className="lista-horarios" style={{ marginTop: 16 }}>
+          <ul className="lista-horarios">
             {horarios.map((horario) => {
               const chave = chaveDoHorario(horario);
               const estaAlterando = alterando === chave;
@@ -331,7 +315,7 @@ export default function GerenciamentoHorariosPage() {
 
               return (
                 <li className="horario" key={chave}>
-                  <span className="horario-hora horario-hora-gerenciamento">
+                  <span className="horario-hora">
                     {formatarData(horario.Data)}
                     <br />
                     {horario.HoraInicio} – {horario.HoraFim}
@@ -380,6 +364,6 @@ export default function GerenciamentoHorariosPage() {
           </ul>
         )}
       </section>
-    </main>
+    </Pagina>
   );
 }
